@@ -13,5 +13,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface LoginService {
-    MemberResponseDto signUp(String email, String password, String name, Auth auth, Role role);
+    MemberResponseDto signUp(String email, String password, String name, Auth auth);
 }

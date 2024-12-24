@@ -9,5 +9,5 @@ import lombok.Getter;
 public class SessionDto {
     private Long id;
 
-    private Auth role;
+    private Auth auth;
 }

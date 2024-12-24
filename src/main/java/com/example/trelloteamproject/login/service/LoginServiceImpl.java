@@ -19,7 +19,7 @@ public class LoginServiceImpl implements LoginService {
     private final MemberRepository memberRepository;
 
     @Override
-    public MemberResponseDto signUp(String email, String password, String name, Auth auth, Role role) {
+    public MemberResponseDto signUp(String email, String password, String name, Auth auth) {
         if(memberRepository.existsByEmail(email)){
             throw new DuplicatedException(EMAIL_EXIST);
         }
@@ -27,8 +27,7 @@ public class LoginServiceImpl implements LoginService {
                 email,
                 password,
                 name,
-                auth,
-                role
+                auth
         ));
         return MemberResponseDto.toDto(member);
     }

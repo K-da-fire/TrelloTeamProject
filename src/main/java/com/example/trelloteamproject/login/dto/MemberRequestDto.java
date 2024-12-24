@@ -27,6 +27,4 @@ public class MemberRequestDto {
 
     @NotNull(message = "권한정보는 필수입니다.")
     private Auth auth;
-
-    private Role role;
 }
