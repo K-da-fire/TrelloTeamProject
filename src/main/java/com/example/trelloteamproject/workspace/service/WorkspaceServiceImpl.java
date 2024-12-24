@@ -29,7 +29,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public CreateWorkspaceResponseDto save(String title, String content) {
 
-        User user = new User("fsf@naver.com", "qqq","leehaewook",Auth.USER);
+        User user = new User("wow@naver.com", "qqq","leehaewook",Auth.USER);
 
         userRepository.save(user);
 

@@ -27,12 +27,12 @@ public class InvocationServiceImpl implements InvitationService {
     }
 
     @Override
-    public InvitationResponseDto save(String email, Long workspaceId) {
+    public InvitationResponseDto save(String email, Long workspaceId, Role role) {
         User finduser = userRepository.findByEmail(email);
 
         Workspace findWorkspaceId = workspaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
-        Invitation invitation = new Invitation(finduser,findWorkspaceId);
+        Invitation invitation = new Invitation(finduser,findWorkspaceId,role);
 
         Invitation savedInvitation = invitationRepository.save(invitation);
 

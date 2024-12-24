@@ -46,7 +46,8 @@ public class Invitation extends BaseEntity {
     public static InvitationResponseDto toDto(Invitation invitation) {
         return new InvitationResponseDto(
                 invitation.getUser().getEmail(),
-                invitation.workSpace.getId()
+                invitation.getWorkSpace().getId(),
+                invitation.getRole()
 
         );
     }

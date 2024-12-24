@@ -23,7 +23,6 @@ public class InvitationController {
 
     @PostMapping()
     public ResponseEntity<InvitationResponseDto> save(
-            @Valid
             @RequestBody InvitationRequestDto requestDto,
             HttpServletRequest httpServlet){
 //        HttpSession session = httpServlet.getSession(false);
@@ -31,7 +30,7 @@ public class InvitationController {
 //        Long userId = (Long) session.getAttribute("userId");
 
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        InvitationResponseDto savedInvitation = invitationService.save(requestDto.getUser().getEmail(),requestDto.getWorkspaceId().getId());
+        InvitationResponseDto savedInvitation = invitationService.save(requestDto.getEmail(),requestDto.getWorkspaceId(),requestDto.getRole());
 
         return new ResponseEntity<>(savedInvitation, HttpStatus.CREATED);
     }
