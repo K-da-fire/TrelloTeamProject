@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "invitation")
-public class invitation extends BaseEntity {
+public class Invitation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "members_id")
+    @JoinColumn(name = "users_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,7 @@ public class invitation extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public invitation(User user, Workspace workSpace, Role role) {
+    public Invitation(User user, Workspace workSpace, Role role) {
         this.user = user;
         this.workSpace = workSpace;
         this.role = role;

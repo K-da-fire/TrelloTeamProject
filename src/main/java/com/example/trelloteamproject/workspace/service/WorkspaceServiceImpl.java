@@ -4,12 +4,11 @@ import com.example.trelloteamproject.common.Auth;
 
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
-import com.example.trelloteamproject.invitation.entity.invitation;
-import com.example.trelloteamproject.invitation.repository.invitationRepository;
+import com.example.trelloteamproject.invitation.entity.Invitation;
+import com.example.trelloteamproject.invitation.repository.InvitationRepository;
 import com.example.trelloteamproject.member.entity.User;
 import com.example.trelloteamproject.member.repository.UserRepository;
 import com.example.trelloteamproject.member.service.UserService;
-import com.example.trelloteamproject.workspace.dto.CreateWorkspaceRequestDto;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
@@ -23,12 +22,12 @@ import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceRepository workSpaceRepository;
-    private final invitationRepository invitationRepository;
+    private final InvitationRepository invitationRepository;
     private final UserRepository userRepository;
     private final UserService userService;
 
     @Override
-    public CreateWorkspaceResponseDto save(CreateWorkspaceRequestDto requestDto) {
+    public CreateWorkspaceResponseDto save(String title, String content) {
 
         User user = new User("fsf@naver.com", "qqq","leehaewook",Auth.USER);
 
@@ -37,10 +36,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         User finduser = userService.findMemberByIdOrElseThrow(user.getId());
 
         Workspace workSpace = new Workspace(
-                requestDto.getTitle(),
-                requestDto.getContent()
+                title,
+                content
         );
-        invitation invited = new invitation(finduser,workSpace, Role.WORKSPACE);
+        Invitation invited = new Invitation(finduser,workSpace, Role.WORKSPACE);
 
         if(!invited.getRole().equals(Role.WORKSPACE)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
@@ -49,4 +48,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         invitationRepository.save(invited);
         return CreateWorkspaceResponseDto.toDto(workSpace);
     }
+
+
 }
