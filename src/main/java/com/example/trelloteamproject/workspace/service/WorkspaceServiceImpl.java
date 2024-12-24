@@ -4,8 +4,8 @@ import com.example.trelloteamproject.common.Auth;
 
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
-import com.example.trelloteamproject.invited.entity.invitation;
-import com.example.trelloteamproject.invited.repository.invitationRepository;
+import com.example.trelloteamproject.invitation.entity.invitation;
+import com.example.trelloteamproject.invitation.repository.invitationRepository;
 import com.example.trelloteamproject.member.entity.User;
 import com.example.trelloteamproject.member.repository.UserRepository;
 import com.example.trelloteamproject.member.service.UserService;

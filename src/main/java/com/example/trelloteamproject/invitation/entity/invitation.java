@@ -1,4 +1,4 @@
-package com.example.trelloteamproject.invited.entity;
+package com.example.trelloteamproject.invitation.entity;
 
 
 import com.example.trelloteamproject.common.BaseEntity;
