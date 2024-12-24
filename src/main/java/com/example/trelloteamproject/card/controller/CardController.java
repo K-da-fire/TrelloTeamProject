@@ -14,7 +14,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/cards")
 @RequiredArgsConstructor
 public class CardController {
 
@@ -32,6 +32,36 @@ public class CardController {
                 cardRequestDto.getRoute(),
                 cardRequestDto.getDeadline()
         ));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CardResponseDto> findById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(cardService.findById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CardResponseDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody CardRequestDto cardRequestDto,
+            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session
+    ){
+        return ResponseEntity.ok().body(cardService.update(
+                session.getId(),
+                id,
+                cardRequestDto.getTitle(),
+                cardRequestDto.getExplanation(),
+                cardRequestDto.getRoute(),
+                cardRequestDto.getDeadline()
+        ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(
+            @PathVariable Long id,
+            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session
+    ) {
+        String title = cardService.delete(session.getId(), id);
+        return ResponseEntity.ok().body(title + "카드가 삭제 되었습니다.");
     }
 
     // TODO : List와 Board가 추가되었을 때 boardName 혹은 boardId로 전체 보드 조회 수정
