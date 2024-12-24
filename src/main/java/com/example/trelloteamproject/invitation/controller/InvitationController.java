@@ -1,5 +1,6 @@
 package com.example.trelloteamproject.invitation.controller;
 
+import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.invitation.dto.InvitationRequestDto;
 import com.example.trelloteamproject.invitation.dto.InvitationResponseDto;
 import com.example.trelloteamproject.invitation.service.InvitationService;
@@ -23,6 +24,7 @@ public class InvitationController {
 
     @PostMapping()
     public ResponseEntity<InvitationResponseDto> save(
+            @Valid
             @RequestBody InvitationRequestDto requestDto,
             HttpServletRequest httpServlet){
 //        HttpSession session = httpServlet.getSession(false);
@@ -30,7 +32,8 @@ public class InvitationController {
 //        Long userId = (Long) session.getAttribute("userId");
 
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        InvitationResponseDto savedInvitation = invitationService.save(requestDto.getEmail(),requestDto.getWorkspaceId(),requestDto.getRole());
+
+        InvitationResponseDto savedInvitation = invitationService.save(requestDto.getEmail(),requestDto.getWorkspaceId(), Role.valueOf(requestDto.getRole()));
 
         return new ResponseEntity<>(savedInvitation, HttpStatus.CREATED);
     }
