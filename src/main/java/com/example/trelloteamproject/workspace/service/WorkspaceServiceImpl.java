@@ -2,11 +2,13 @@ package com.example.trelloteamproject.workspace.service;
 
 import com.example.trelloteamproject.common.Auth;
 
+import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.invited.entity.Invited;
 import com.example.trelloteamproject.invited.repository.InvitedRepository;
 import com.example.trelloteamproject.member.entity.Member;
 import com.example.trelloteamproject.member.repository.MemberRepository;
+import com.example.trelloteamproject.member.service.MemberService;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceRequestDto;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
@@ -23,6 +25,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workSpaceRepository;
     private final InvitedRepository invitedRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Override
     public CreateWorkspaceResponseDto save(CreateWorkspaceRequestDto requestDto) {
@@ -31,13 +34,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         memberRepository.save(member);
 
+
         Workspace workSpace = new Workspace(
                 requestDto.getTitle(),
                 requestDto.getContent()
         );
-        Invited invited = new Invited(member,workSpace,Auth.ADMIN);
+        Invited invited = new Invited(member,workSpace, Role.WORKSPACE);
 
-        if(!invited.getAuth().equals("ADMIN")){
+        if(!invited.getRole().equals(Role.WORKSPACE)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
         }
         workSpaceRepository.save(workSpace);

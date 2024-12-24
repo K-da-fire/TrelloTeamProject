@@ -31,11 +31,11 @@ public class Invited extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Auth auth;
+    private Role role;
 
-    public Invited(Member member, Workspace workSpace, Auth auth) {
+    public Invited(Member member, Workspace workSpace, Role role) {
         this.member = member;
         this.workSpace = workSpace;
-        this.auth = auth;
+        this.role = role;
     }
 }
