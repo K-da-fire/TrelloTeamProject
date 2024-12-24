@@ -1,6 +1,6 @@
 package com.example.trelloteamproject.invitation.dto;
 
-import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

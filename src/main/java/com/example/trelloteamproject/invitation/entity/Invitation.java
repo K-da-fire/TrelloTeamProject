@@ -4,7 +4,7 @@ package com.example.trelloteamproject.invitation.entity;
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.invitation.dto.InvitationResponseDto;
-import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
