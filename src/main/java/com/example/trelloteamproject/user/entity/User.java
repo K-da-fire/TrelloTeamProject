@@ -1,4 +1,4 @@
-package com.example.trelloteamproject.member.entity;
+package com.example.trelloteamproject.user.entity;
 
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Auth;

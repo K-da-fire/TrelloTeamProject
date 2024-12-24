@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class CardCreateRequestDto {
+public class CardRequestDto {
 
     private String title;
 

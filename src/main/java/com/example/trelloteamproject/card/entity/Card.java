@@ -1,7 +1,9 @@
 package com.example.trelloteamproject.card.entity;
 
+import com.example.trelloteamproject.card.dto.CardRequestDto;
+import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
-import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,4 +36,15 @@ public class Card  extends BaseEntity {
     private String route;
 
     private LocalDateTime deadline;
+
+    public CardResponseDto toDto(){
+        return new CardResponseDto(
+                title,
+                explanation,
+                user.getName(),
+                deadline,
+                getCreatedAt(),
+                getUpdatedAt()
+        );
+    }
 }
