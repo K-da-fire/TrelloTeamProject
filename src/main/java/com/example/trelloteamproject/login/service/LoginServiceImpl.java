@@ -18,8 +18,8 @@ public class LoginServiceImpl implements LoginService {
     public MemberResponseDto signUp(MemberRequestDto memberRequestDto) {
         Member member = loginRepository.save( new Member (
             memberRequestDto.getEmail(),
-                    memberRequestDto.getPassword(),
-                    memberRequestDto.getName(),
+                memberRequestDto.getPassword(),
+                memberRequestDto.getName(),
                     memberRequestDto.getRole()
         ));
         return MemberResponseDto.toDto(member);

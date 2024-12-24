@@ -1,8 +1,10 @@
-package com.example.trelloteamproject.workspace.entity;
+package com.example.trelloteamproject.invited.entity;
 
 
 import com.example.trelloteamproject.common.BaseEntity;
+import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.member.entity.Member;
+import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,11 +21,20 @@ public class Invited extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "members_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
-    private WorkSpace workSpace;
+    private Workspace workSpace;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    public Invited(Member member, Workspace workSpace, Role role) {
+        this.member = member;
+        this.workSpace = workSpace;
+        this.role = role;
+    }
 }

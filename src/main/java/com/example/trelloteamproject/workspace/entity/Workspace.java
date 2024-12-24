@@ -7,18 +7,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "workspace")
-public class WorkSpace extends BaseEntity {
+public class Workspace extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String title;
 
+    @Column(nullable = false)
+    private String  content;
 
+    public Workspace(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
