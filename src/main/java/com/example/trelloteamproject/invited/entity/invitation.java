@@ -1,10 +1,9 @@
 package com.example.trelloteamproject.invited.entity;
 
 
-import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Role;
-import com.example.trelloteamproject.member.entity.Member;
+import com.example.trelloteamproject.member.entity.User;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,15 +14,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "invited")
-public class Invited extends BaseEntity {
+@Table(name = "invitation")
+public class invitation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "members_id")
-    private Member member;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
@@ -33,8 +32,8 @@ public class Invited extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public Invited(Member member, Workspace workSpace, Role role) {
-        this.member = member;
+    public invitation(User user, Workspace workSpace, Role role) {
+        this.user = user;
         this.workSpace = workSpace;
         this.role = role;
     }
