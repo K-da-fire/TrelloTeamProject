@@ -23,6 +23,6 @@ public class LoginController {
     public ResponseEntity<MemberResponseDto> signUp(
             @Valid @RequestBody MemberRequestDto userRequestDto
     ) {
-        return ResponseEntity.ok().body(loginService.signUp(userRequestDto));
+        return ResponseEntity.ok().body(loginService.signUp(userRequestDto.getEmail(), userRequestDto.getPassword(), userRequestDto.getName(), userRequestDto.getAuth()));
     }
 }

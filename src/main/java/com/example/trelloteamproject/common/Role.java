@@ -1,5 +1,5 @@
 package com.example.trelloteamproject.common;
 
 public enum Role {
-    ADMIN, USER
+    WORKSPACE, BOARD, READ_ONLY
 }
