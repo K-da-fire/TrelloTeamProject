@@ -1,6 +1,7 @@
 package com.example.trelloteamproject.login.dto;
 
 import com.example.trelloteamproject.common.Role;
+import com.example.trelloteamproject.common.Auth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -25,5 +26,5 @@ public class MemberRequestDto {
     private String name;
 
     @NotNull(message = "권한정보는 필수입니다.")
-    private Role role;
+    private Auth auth;
 }

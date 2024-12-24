@@ -1,26 +1,33 @@
 package com.example.trelloteamproject.login.service;
 
+import com.example.trelloteamproject.common.Role;
+import com.example.trelloteamproject.common.Auth;
+import com.example.trelloteamproject.exception.DuplicatedException;
 import com.example.trelloteamproject.login.dto.MemberRequestDto;
 import com.example.trelloteamproject.login.dto.MemberResponseDto;
-import com.example.trelloteamproject.login.repository.LoginRepository;
 import com.example.trelloteamproject.member.entity.Member;
+import com.example.trelloteamproject.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.example.trelloteamproject.exception.ErrorCode.EMAIL_EXIST;
 
 @Service
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    private final LoginRepository loginRepository;
+    private final MemberRepository memberRepository;
 
     @Override
-    public MemberResponseDto signUp(MemberRequestDto memberRequestDto) {
-        Member member = loginRepository.save( new Member (
-            memberRequestDto.getEmail(),
-                memberRequestDto.getPassword(),
-                memberRequestDto.getName(),
-                    memberRequestDto.getRole()
+    public MemberResponseDto signUp(String email, String password, String name, Auth auth) {
+        if(memberRepository.existsByEmail(email)){
+            throw new DuplicatedException(EMAIL_EXIST);
+        }
+        Member member = memberRepository.save( new Member (
+                email,
+                password,
+                name,
+                auth
         ));
         return MemberResponseDto.toDto(member);
     }

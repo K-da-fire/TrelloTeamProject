@@ -1,6 +1,7 @@
 package com.example.trelloteamproject.invited.entity;
 
 
+import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.member.entity.Member;
@@ -30,11 +31,11 @@ public class Invited extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Role role;
+    private Auth auth;
 
-    public Invited(Member member, Workspace workSpace, Role role) {
+    public Invited(Member member, Workspace workSpace, Auth auth) {
         this.member = member;
         this.workSpace = workSpace;
-        this.role = role;
+        this.auth = auth;
     }
 }

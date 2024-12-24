@@ -1,18 +1,14 @@
 package com.example.trelloteamproject.member.entity;
 
-import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Role;
+import com.example.trelloteamproject.common.BaseEntity;
+import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.util.PasswordEncoder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -38,15 +34,19 @@ public class Member extends BaseEntity {
     private String name;
 
     @Enumerated(value = EnumType.STRING)
-    private Role role;
+    private Auth auth;
 
     @JsonFormat(pattern = "yy:MM:dd hh:mm:ss")
     private LocalDateTime deletedAt;
 
-    public Member(String email, String password, String name, Role role) {
+    public Member(String email, String password, String name, Auth auth) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.auth = auth;
+    }
+
+    public void delete(){
+        this.deletedAt = LocalDateTime.now();
     }
 }
