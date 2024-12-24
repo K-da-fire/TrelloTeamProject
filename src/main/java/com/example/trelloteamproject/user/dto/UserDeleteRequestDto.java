@@ -1,4 +1,4 @@
-package com.example.trelloteamproject.member.dto;
+package com.example.trelloteamproject.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

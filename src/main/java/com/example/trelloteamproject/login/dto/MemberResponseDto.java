@@ -1,6 +1,6 @@
 package com.example.trelloteamproject.login.dto;
 
-import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -18,6 +18,7 @@ public enum ErrorCode {
 
     // NotFoundException
     NOT_FOUND_MEMBER("멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_FOUND_CARD("카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     // InternalServerException
     //세션이 만료되었을 때 출력하는 오류 메시지

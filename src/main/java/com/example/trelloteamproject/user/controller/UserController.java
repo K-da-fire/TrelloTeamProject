@@ -1,8 +1,8 @@
-package com.example.trelloteamproject.member.controller;
+package com.example.trelloteamproject.user.controller;
 
 import com.example.trelloteamproject.login.entity.SessionDto;
-import com.example.trelloteamproject.member.dto.UserDeleteRequestDto;
-import com.example.trelloteamproject.member.service.UserService;
+import com.example.trelloteamproject.user.dto.UserDeleteRequestDto;
+import com.example.trelloteamproject.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.trelloteamproject.common.LoginStatus;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 

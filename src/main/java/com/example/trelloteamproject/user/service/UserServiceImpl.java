@@ -1,9 +1,9 @@
-package com.example.trelloteamproject.member.service;
+package com.example.trelloteamproject.user.service;
 
 import com.example.trelloteamproject.exception.InvalidInputException;
 import com.example.trelloteamproject.exception.NotFoundException;
-import com.example.trelloteamproject.member.entity.User;
-import com.example.trelloteamproject.member.repository.UserRepository;
+import com.example.trelloteamproject.user.entity.User;
+import com.example.trelloteamproject.user.repository.UserRepository;
 import com.example.trelloteamproject.util.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

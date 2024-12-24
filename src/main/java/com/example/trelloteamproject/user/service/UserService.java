@@ -1,6 +1,6 @@
-package com.example.trelloteamproject.member.service;
+package com.example.trelloteamproject.user.service;
 
-import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.user.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service
