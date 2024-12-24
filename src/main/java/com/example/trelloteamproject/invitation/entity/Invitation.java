@@ -3,6 +3,7 @@ package com.example.trelloteamproject.invitation.entity;
 
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Role;
+import com.example.trelloteamproject.invitation.dto.InvitationResponseDto;
 import com.example.trelloteamproject.member.entity.User;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
@@ -36,5 +37,17 @@ public class Invitation extends BaseEntity {
         this.user = user;
         this.workSpace = workSpace;
         this.role = role;
+    }
+
+    public Invitation(User user, Workspace workSpace) {
+        this.user = user;
+        this.workSpace = workSpace;
+    }
+    public static InvitationResponseDto toDto(Invitation invitation) {
+        return new InvitationResponseDto(
+                invitation.getUser().getEmail(),
+                invitation.workSpace.getId()
+
+        );
     }
 }
