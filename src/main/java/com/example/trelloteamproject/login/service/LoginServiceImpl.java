@@ -3,8 +3,8 @@ package com.example.trelloteamproject.login.service;
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.exception.DuplicatedException;
 import com.example.trelloteamproject.login.dto.MemberResponseDto;
-import com.example.trelloteamproject.member.entity.User;
-import com.example.trelloteamproject.member.repository.UserRepository;
+import com.example.trelloteamproject.user.entity.User;
+import com.example.trelloteamproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

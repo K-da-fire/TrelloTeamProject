@@ -1,6 +1,6 @@
-package com.example.trelloteamproject.member.repository;
+package com.example.trelloteamproject.user.repository;
 
-import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
