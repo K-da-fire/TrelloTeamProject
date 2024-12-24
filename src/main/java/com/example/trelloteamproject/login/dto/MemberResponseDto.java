@@ -1,6 +1,6 @@
 package com.example.trelloteamproject.login.dto;
 
-import com.example.trelloteamproject.member.entity.Member;
+import com.example.trelloteamproject.member.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,10 +12,10 @@ public class MemberResponseDto {
 
     private String name;
 
-    public static MemberResponseDto toDto(Member member) {
+    public static MemberResponseDto toDto(User user) {
         return new MemberResponseDto(
-                member.getEmail(),
-                member.getName()
+                user.getEmail(),
+                user.getName()
         );
     }
 }

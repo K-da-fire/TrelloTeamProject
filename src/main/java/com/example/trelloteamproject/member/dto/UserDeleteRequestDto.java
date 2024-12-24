@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class MemberDeleteRequestDto {
+public class UserDeleteRequestDto {
 
     @NotBlank(message = "비밀번호는 필수값입니다.")
     @Size(min = 8, max = 100, message = "비밀번호는 최소 8자, 최대 100자입니다.")
