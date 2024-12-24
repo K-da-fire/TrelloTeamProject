@@ -1,8 +1,8 @@
 package com.example.trelloteamproject.member.controller;
 
 import com.example.trelloteamproject.login.entity.SessionDto;
-import com.example.trelloteamproject.member.dto.MemberDeleteRequestDto;
-import com.example.trelloteamproject.member.service.MemberService;
+import com.example.trelloteamproject.member.dto.UserDeleteRequestDto;
+import com.example.trelloteamproject.member.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +12,16 @@ import com.example.trelloteamproject.common.LoginStatus;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class UserController {
 
-    private final MemberService memberService;
+    private final UserService userService;
 
     @DeleteMapping
     public ResponseEntity<String> deleteMember(
             @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
-            @Valid @RequestBody MemberDeleteRequestDto memberDeleteRequestDto
+            @Valid @RequestBody UserDeleteRequestDto userDeleteRequestDto
             ) {
-        memberService.deleteMember(session.getId(), memberDeleteRequestDto.getPassword());
+        userService.deleteMember(session.getId(), userDeleteRequestDto.getPassword());
         return ResponseEntity.ok("Member deleted.");
     }
 }

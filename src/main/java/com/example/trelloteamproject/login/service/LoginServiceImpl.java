@@ -1,12 +1,10 @@
 package com.example.trelloteamproject.login.service;
 
-import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.exception.DuplicatedException;
-import com.example.trelloteamproject.login.dto.MemberRequestDto;
 import com.example.trelloteamproject.login.dto.MemberResponseDto;
-import com.example.trelloteamproject.member.entity.Member;
-import com.example.trelloteamproject.member.repository.MemberRepository;
+import com.example.trelloteamproject.member.entity.User;
+import com.example.trelloteamproject.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +14,19 @@ import static com.example.trelloteamproject.exception.ErrorCode.EMAIL_EXIST;
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     @Override
     public MemberResponseDto signUp(String email, String password, String name, Auth auth) {
-        if(memberRepository.existsByEmail(email)){
+        if(userRepository.existsByEmail(email)){
             throw new DuplicatedException(EMAIL_EXIST);
         }
-        Member member = memberRepository.save( new Member (
+        User user = userRepository.save( new User(
                 email,
                 password,
                 name,
                 auth
         ));
-        return MemberResponseDto.toDto(member);
+        return MemberResponseDto.toDto(user);
     }
 }

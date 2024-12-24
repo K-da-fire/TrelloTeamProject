@@ -1,6 +1,5 @@
 package com.example.trelloteamproject.member.entity;
 
-import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.util.PasswordEncoder;
@@ -16,8 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "members")
-public class Member extends BaseEntity {
+@Table(name = "users")
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +38,7 @@ public class Member extends BaseEntity {
     @JsonFormat(pattern = "yy:MM:dd hh:mm:ss")
     private LocalDateTime deletedAt;
 
-    public Member(String email, String password, String name, Auth auth) {
+    public User(String email, String password, String name, Auth auth) {
         this.email = email;
         this.password = password;
         this.name = name;
