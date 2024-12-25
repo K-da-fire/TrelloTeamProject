@@ -66,7 +66,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         findWorkspace.updateWorkspace(title,content);
 
-        return Workspace.toDto(findWorkspace);
+        Workspace savedWorkspace = workSpaceRepository.save(findWorkspace);
+
+
+        return Workspace.toDto(savedWorkspace);
 
     }
 
@@ -74,6 +77,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public Workspace findWorkspaceByIdOrElseThrow(Long id) {
         return workSpaceRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
+    }
+
+    @Override
+    public void delete(Long workspace_id) {
+
+        Workspace findWorkspace = findWorkspaceByIdOrElseThrow(workspace_id);
+        workSpaceRepository.delete(findWorkspace);
     }
 
 

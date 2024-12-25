@@ -46,7 +46,7 @@ public class WorkspaceController {
         List<WorkspaceResponseDto> allWorkspaces = workspaceService.findAllWorkspaces();
         return new ResponseEntity<>(allWorkspaces,HttpStatus.OK);
     }
-    @PatchMapping("/workspace/{workspace_id}")
+    @PatchMapping("{workspace_id}")
     public ResponseEntity<WorkspaceResponseDto> update(
             @PathVariable Long workspace_id,
             @Valid
@@ -55,6 +55,17 @@ public class WorkspaceController {
         WorkspaceResponseDto updateWorkspace = workspaceService.updateWorkspace(workspace_id, requestDto.getTitle(), requestDto.getContent());
 
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
+    }
+    @DeleteMapping("{workspace_id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long workspace_id,
+            @Valid
+            HttpServletRequest request){
+
+        workspaceService.delete(workspace_id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
 

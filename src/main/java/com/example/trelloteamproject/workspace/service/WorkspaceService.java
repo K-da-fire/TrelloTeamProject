@@ -19,4 +19,6 @@ public interface WorkspaceService {
 
     Workspace findWorkspaceByIdOrElseThrow(Long id);
 
+    void delete(Long workspace_id);
+
 }
