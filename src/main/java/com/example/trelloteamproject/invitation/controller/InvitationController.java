@@ -4,9 +4,7 @@ import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.invitation.dto.InvitationRequestDto;
 import com.example.trelloteamproject.invitation.dto.InvitationResponseDto;
 import com.example.trelloteamproject.invitation.service.InvitationService;
-import com.example.trelloteamproject.list.entity.List;
-import com.example.trelloteamproject.workspace.dto.CreateWorkspaceRequestDto;
-import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
