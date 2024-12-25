@@ -2,6 +2,7 @@ package com.example.trelloteamproject.workspace.entity;
 
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.common.BaseEntity;
+import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,5 +31,17 @@ public class Workspace extends BaseEntity {
         this.content = content;
     }
 
+    public static WorkspaceResponseDto toDto(Workspace workspace) {
+        return new WorkspaceResponseDto(
+                workspace.getId(),
+                workspace.getTitle(),
+                workspace.getContent()
+        );
+    }
+
+    public void updateWorkspace(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
 }
