@@ -18,7 +18,7 @@ public class InvitationResponseDto {
     public static InvitationResponseDto toDto(Invitation invitation) {
         return new InvitationResponseDto(
                 invitation.getUser().getEmail(),
-                invitation.getWorkSpace().getId(),
+                invitation.getWorkspace().getId(),
                 invitation.getRole()
         );
     }

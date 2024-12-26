@@ -17,6 +17,7 @@ import com.example.trelloteamproject.workspace.entity.Workspace;
 import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
@@ -30,6 +31,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final UserRepository userRepository;
     private final UserService userService;
 
+    @Transactional
     @Override
     public CreateWorkspaceResponseDto save(String title, String content) {
 

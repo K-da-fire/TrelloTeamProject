@@ -56,7 +56,7 @@ public class WorkspaceController {
 
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
     }
-    @DeleteMapping("{workspace_id}")
+    @DeleteMapping("/{workspace_id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long workspace_id,
             @Valid

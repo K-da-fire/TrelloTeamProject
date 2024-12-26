@@ -27,26 +27,26 @@ public class Invitation extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
-    private Workspace workSpace;
+    private Workspace workspace;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public Invitation(User user, Workspace workSpace, Role role) {
+    public Invitation(User user, Workspace workspace, Role role) {
         this.user = user;
-        this.workSpace = workSpace;
+        this.workspace = workspace;
         this.role = role;
     }
 
     public Invitation(User user, Workspace workSpace) {
         this.user = user;
-        this.workSpace = workSpace;
+        this.workspace = workSpace;
     }
     public static InvitationResponseDto toDto(Invitation invitation) {
         return new InvitationResponseDto(
                 invitation.getUser().getEmail(),
-                invitation.getWorkSpace().getId(),
+                invitation.getWorkspace().getId(),
                 invitation.getRole()
 
         );
