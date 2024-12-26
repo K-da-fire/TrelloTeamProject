@@ -1,6 +1,8 @@
 package com.example.trelloteamproject.workspace.controller;
 
 
+import com.example.trelloteamproject.common.Auth;
+import com.example.trelloteamproject.login.entity.SessionDto;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceRequestDto;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.dto.WorkspaceRequestDto;
@@ -23,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
-
+    SessionDto session = new SessionDto(1L, Auth.ADMIN);
     @PostMapping()
     public ResponseEntity<CreateWorkspaceResponseDto> save(
             @Valid
@@ -31,10 +33,10 @@ public class WorkspaceController {
             HttpServletRequest httpServlet){
 //        HttpSession session = httpServlet.getSession(false);
 
-//        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) session.getId();
 
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(requestDto.getTitle(),requestDto.getContent());
+        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto.getTitle(),requestDto.getContent());
 
         return new ResponseEntity<>(savedWorkspace, HttpStatus.CREATED);
     }
@@ -46,23 +48,26 @@ public class WorkspaceController {
         List<WorkspaceResponseDto> allWorkspaces = workspaceService.findAllWorkspaces();
         return new ResponseEntity<>(allWorkspaces,HttpStatus.OK);
     }
-    @PatchMapping("{workspace_id}")
+    @PatchMapping("/{workspaceId}")
     public ResponseEntity<WorkspaceResponseDto> update(
-            @PathVariable Long workspace_id,
+            @PathVariable Long workspaceId,
             @Valid
             @RequestBody WorkspaceRequestDto requestDto,
             HttpServletRequest request){
-        WorkspaceResponseDto updateWorkspace = workspaceService.updateWorkspace(workspace_id, requestDto.getTitle(), requestDto.getContent());
+
+        Long userId = (Long) session.getId();
+        WorkspaceResponseDto updateWorkspace = workspaceService.updateWorkspace(userId,workspaceId, requestDto.getTitle(), requestDto.getContent());
 
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
     }
-    @DeleteMapping("/{workspace_id}")
+    @DeleteMapping("/{workspaceId}")
     public ResponseEntity<Void> delete(
-            @PathVariable Long workspace_id,
+            @PathVariable Long workspaceId,
             @Valid
             HttpServletRequest request){
 
-        workspaceService.delete(workspace_id);
+        Long userId = (Long) session.getId();
+        workspaceService.delete(userId,workspaceId);
 
         return new ResponseEntity<>(HttpStatus.OK);
 
