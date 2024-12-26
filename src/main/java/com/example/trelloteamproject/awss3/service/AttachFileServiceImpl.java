@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.awss3.repository.AttachFileRepository;
+import com.example.trelloteamproject.board.entity.Board;
+import com.example.trelloteamproject.board.repository.BoardRepository;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
 import com.example.trelloteamproject.exception.NotFoundException;
@@ -34,16 +36,13 @@ public class AttachFileServiceImpl implements AttachFileService {
     private String bucket;
 
     private final AttachFileRepository attachFileRepository;
-    private final CardRepository cardRepository;
     private final AmazonS3 amazonS3;
 
     @Override
     public AttachFile uploadFile(MultipartFile multipartFile){
-
         if (multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
-
         String fileName = createFileName(multipartFile.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -75,11 +74,9 @@ public class AttachFileServiceImpl implements AttachFileService {
     }
 
     @Override
-    public void deleteFile(Card card, String fileName){
+    public void deleteFile(String fileName){
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
         AttachFile attachFile = findByFileNameOrElseThrow(fileName);
-        card.setAttachFile(null);
-        cardRepository.save(card);
         attachFileRepository.delete(attachFile);
     }
 

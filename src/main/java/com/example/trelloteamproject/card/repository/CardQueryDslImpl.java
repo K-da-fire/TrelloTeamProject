@@ -15,7 +15,7 @@ import java.util.List;
 public class CardQueryDslImpl implements CardQueryDsl {
 
     private final JPAQueryFactory jpaQueryFactor;
-
+    
     @Override
     public List<Card> searchCards(Long boardId, String title, String content, String userName, LocalDateTime deadline) {
         QCard card = QCard.card;

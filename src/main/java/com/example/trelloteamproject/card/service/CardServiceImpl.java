@@ -65,7 +65,9 @@ public class CardServiceImpl implements CardService {
     @Override
     public String delete(Long userId, Long cardId) {
         Card card = checkManager(userId, cardId);
-        attachFileService.deleteFile(card, card.getAttachFile().getFileName());
+        card.setAttachFile(null);
+        cardRepository.save(card);
+        attachFileService.deleteFile(card.getAttachFile().getFileName());
         cardRepository.delete(card);
         return card.getTitle();
     }
@@ -75,7 +77,9 @@ public class CardServiceImpl implements CardService {
         Card card = checkManager(userId, cardId);
         AttachFile fileName = card.getAttachFile();
         if(!file.isEmpty()){
-            attachFileService.deleteFile(card, fileName.getFileName());
+            card.setAttachFile(null);
+            cardRepository.save(card);
+            attachFileService.deleteFile(fileName.getFileName());
             fileName = attachFileService.uploadFile(file);
         }
         // 각 값이 주어지지 않는다면 원래값을 유지한다.

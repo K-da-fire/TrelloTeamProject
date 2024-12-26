@@ -12,5 +12,5 @@ public interface AttachFileService {
     AttachFile findByIdOrElseThrow(Long id);
     AttachFile findByFileNameOrElseThrow(String fileName);
 
-    void deleteFile(Card card, String fileName);
+    void deleteFile(String fileName);
 }
