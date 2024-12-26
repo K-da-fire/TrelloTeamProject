@@ -1,5 +1,6 @@
 package com.example.trelloteamproject.board.service;
 
+import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
@@ -19,6 +20,7 @@ import com.example.trelloteamproject.workspace.entity.Workspace;
 import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class BoardServiceImpl implements BoardService {
     private final UserService userService;
 
     @Override
-    public CreateBoardResponseDto save(String title, String background) {
+    public CreateBoardResponseDto save(String title, MultipartFile background) {
 
 
 //        User finduser = userService.findMemberByIdOrElseThrow(user.getId());
@@ -60,7 +62,7 @@ public class BoardServiceImpl implements BoardService {
 
     }
     @Override
-    public BoardResponseDto updateWorkspace(Long board_id, String title, String background) {
+    public BoardResponseDto updateBoard(Long board_id, String title, MultipartFile background) {
 
         Board findBoard = boardRepository.findById(board_id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));;
 
