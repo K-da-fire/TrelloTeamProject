@@ -8,6 +8,8 @@ import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.entity.Invitation;
 import com.example.trelloteamproject.invitation.repository.InvitationRepository;
 import java.util.List;
+
+import com.example.trelloteamproject.invitation.service.InvitationService;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
 import com.example.trelloteamproject.user.service.UserService;
@@ -27,31 +29,25 @@ import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE
 public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceRepository workSpaceRepository;
-    private final InvitationRepository invitationRepository;
+    private final InvitationService invitationService;
     private final UserRepository userRepository;
     private final UserService userService;
 
     @Transactional
     @Override
-    public CreateWorkspaceResponseDto save(String title, String content) {
+    public CreateWorkspaceResponseDto save(Long userId, String title, String content) {
 
-        User user = new User("wow@naver.com", "qqq","leehaewook",Auth.USER);
 
-        userRepository.save(user);
 
-        User finduser = userService.findMemberByIdOrElseThrow(user.getId());
-
+        User finduser = userService.findMemberByIdOrElseThrow(userId);
+        if(!finduser.getAuth().equals(Auth.ADMIN)){
+            throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
+        }
         Workspace workSpace = new Workspace(
                 title,
                 content
         );
-        Invitation invited = new Invitation(finduser,workSpace, Role.WORKSPACE);
-
-        if(!invited.getRole().equals(Role.WORKSPACE)){
-            throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
-        }
         workSpaceRepository.save(workSpace);
-        invitationRepository.save(invited);
         return CreateWorkspaceResponseDto.toDto(workSpace);
     }
 
@@ -62,9 +58,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public WorkspaceResponseDto updateWorkspace(Long workspace_id, String title, String content) {
-
-        Workspace findWorkspace = workSpaceRepository.findById(workspace_id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));;
+    public WorkspaceResponseDto updateWorkspace(Long userId,Long workspaceId, String title, String content) {
+        checkRole(userId, workspaceId);
+        Workspace findWorkspace = findWorkspaceByIdOrElseThrow(workspaceId);
 
         findWorkspace.updateWorkspace(title,content);
 
@@ -82,11 +78,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void delete(Long workspace_id) {
-
-        Workspace findWorkspace = findWorkspaceByIdOrElseThrow(workspace_id);
+    public void delete(Long userId,Long workspaceId) {
+        checkRole(userId, workspaceId);
+        Workspace findWorkspace = findWorkspaceByIdOrElseThrow(workspaceId);
         workSpaceRepository.delete(findWorkspace);
     }
+
+
+    private void checkRole(Long userId, Long workspaceId){
+        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
+
+        if(!findInvitation.getRole().equals(Role.WORKSPACE)){
+            throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
+        }
+    }
+
 
 
 }
