@@ -1,15 +1,18 @@
 package com.example.trelloteamproject.card.service;
 
+import com.example.trelloteamproject.awss3.AwsS3FileService;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
 import com.example.trelloteamproject.exception.ErrorCode;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
+import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,14 +23,21 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final UserService userService;
+    private final AwsS3FileService awsS3FileService;
 //    private final ListService listService;
 //    private final BoardService boardService;
 //    private final WorkspaceService workspaceService;
 
     @Override
-    public CardResponseDto create(Long id, String title, String explanation, String route, LocalDateTime deadline) {
+    public CardResponseDto create(Long id, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
         User user = userService.findMemberByIdOrElseThrow(id);
-        return null;
+        Lists list = null;
+        String fileName = "";
+        if(!image.isEmpty()){
+            fileName = awsS3FileService.uploadFile(image);
+        }
+        Card card = new Card(user, list, title, explanation, fileName, deadline);
+        return cardRepository.save(card).toDto();
     }
 
     @Override
@@ -56,13 +66,18 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public CardResponseDto update(Long userId, Long cardId, String title, String explanation, String route, LocalDateTime deadline) {
+    public CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
         Card card = checkManager(userId, cardId);
+        String fileName = card.getFileName();
+        if(!file.isEmpty()){
+            awsS3FileService.deleteFile(card.getFileName());
+            fileName = awsS3FileService.uploadFile(file);
+        }
         // 각 값이 주어지지 않는다면 원래값을 유지한다.
         card.updateCard(
                 title.isEmpty()? card.getTitle(): title,
                 explanation.isEmpty()? card.getExplanation() : explanation,
-                route.isEmpty()? card.getRoute() : route,
+                fileName,
                 deadline == null? card.getDeadline(): deadline);
         cardRepository.save(card);
 

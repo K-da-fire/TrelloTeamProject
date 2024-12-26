@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +24,7 @@ public class Card  extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
@@ -34,9 +35,18 @@ public class Card  extends BaseEntity {
 
     private String explanation;
 
-    private String route;
+    private String fileName;
 
     private LocalDateTime deadline;
+
+    public Card(User user, Lists list, String title, String explanation, String fileName, LocalDateTime deadline) {
+        this.user = user;
+        this.list = list;
+        this.title = title;
+        this.explanation = explanation;
+        this.fileName = fileName;
+        this.deadline = deadline;
+    }
 
     public CardResponseDto toDto(){
         return new CardResponseDto(
@@ -49,10 +59,10 @@ public class Card  extends BaseEntity {
         );
     }
 
-    public void updateCard(String titel, String explanation, String route, LocalDateTime deadline) {
-        this.title = titel;
+    public void updateCard(String title, String explanation, String fileName, LocalDateTime deadline) {
+        this.title = title;
         this.explanation = explanation;
-        this.route = route;
+        this.fileName = fileName;
         this.deadline = deadline;
     }
 }

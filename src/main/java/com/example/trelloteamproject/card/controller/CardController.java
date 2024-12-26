@@ -3,6 +3,7 @@ package com.example.trelloteamproject.card.controller;
 import com.example.trelloteamproject.card.dto.CardRequestDto;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.service.CardService;
+import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.common.LoginStatus;
 import com.example.trelloteamproject.login.dto.MemberResponseDto;
 import com.example.trelloteamproject.login.entity.SessionDto;
@@ -22,14 +23,15 @@ public class CardController {
 
     @PostMapping
     public ResponseEntity<CardResponseDto> create(
-            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
+//            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
             @Valid @RequestBody CardRequestDto cardRequestDto
     ) {
+        SessionDto session = new SessionDto(1L, Auth.ADMIN);
         return ResponseEntity.ok().body(cardService.create(
                 session.getId(),
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
-                cardRequestDto.getRoute(),
+                cardRequestDto.getImage(),
                 cardRequestDto.getDeadline()
         ));
     }
@@ -50,7 +52,7 @@ public class CardController {
                 id,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
-                cardRequestDto.getRoute(),
+                cardRequestDto.getImage(),
                 cardRequestDto.getDeadline()
         ));
     }
