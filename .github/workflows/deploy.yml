@@ -57,9 +57,15 @@ jobs:
               fi
             done
             export DB_URL=${{secrets.DB_URL}}
+            echo "DB_URL=$DB_URL"
             export DB_USERNAME=${{secrets.DB_USERNAME}}
+            echo "DB_USERNAME=$DB_USERNAME"
             export DB_PASSWORD=${{secrets.DB_PASSWORD}}
+            echo "DB_PASSWORD=$DB_PASSWORD"
             export S3_ACCESSKEY=${{secrets.S3_ACCESSKEY}}
+            echo "S3_ACCESSKEY=$S3_ACCESSKEY"
             export S3_SECRETKEY=${{secrets.S3_SECRETKEY}}
+            echo "S3_SECRETKEY=$S3_SECRETKEY"
             export S3_BUCKET=${{secrets.S3_BUCKET}}
+            echo "S3_BUCKET=$S3_BUCKET"
             nohup java -jar ~/*.jar > ~/app.log 2>&1 &
