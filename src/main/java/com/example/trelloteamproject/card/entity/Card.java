@@ -23,11 +23,11 @@ public class Card  extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "users_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "list_id")
+    @JoinColumn(name = "lists_id")
     private Lists list;
 
     private String title;

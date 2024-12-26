@@ -1,7 +1,8 @@
 package com.example.trelloteamproject.board.entity;
 
+import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
-import com.example.trelloteamproject.lists.entity.Lists;
+
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,27 @@ public class Board extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private String  content;
+    private String background;
 
     @ManyToOne
     @JoinColumn(name = "workplace_id")
     private Workspace workspace;
 
+    public Board(String title, String background) {
+        this.title = title;
+        this.background = background;
+    }
+
+    public void updateBoard(String title, String background) {
+        this.title = title;
+        this.background = background;
+    }
+
+    public static BoardResponseDto toDto(Board board) {
+        return new BoardResponseDto(
+                board.getId(),
+                board.getTitle(),
+                board.getBackground()
+        );
+    }
 }

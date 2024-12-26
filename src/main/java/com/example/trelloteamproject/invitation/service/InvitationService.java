@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface InvitationService {
     Role findInvocationByRoleOrElseThrow(Invitation invitation);
-    InvitationResponseDto save(String email, Long workspaceId);
+    InvitationResponseDto save(String email, Long workspaceId,Role role);
 }
