@@ -1,6 +1,7 @@
 package com.example.trelloteamproject.card.repository;
 
 import com.example.trelloteamproject.card.entity.Card;
+
 import com.example.trelloteamproject.card.entity.QCard;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.RequiredArgsConstructor;
