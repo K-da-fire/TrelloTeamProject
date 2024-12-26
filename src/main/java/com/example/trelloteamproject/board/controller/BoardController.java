@@ -5,6 +5,8 @@ import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardRequestDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.service.BoardService;
+import com.example.trelloteamproject.common.Auth;
+import com.example.trelloteamproject.login.entity.SessionDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
+    SessionDto session = new SessionDto(1L, Auth.ADMIN);
+
     @PostMapping("/boards")
     public ResponseEntity<CreateBoardResponseDto> save(
             @Valid
@@ -31,15 +35,17 @@ public class BoardController {
 
 //        Long userId = (Long) session.getAttribute("userId");
 
+        Long userId = (Long) session.getId();
+
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        CreateBoardResponseDto savedBoard = boardService.save(requestDto.getTitle(),file);
+        CreateBoardResponseDto savedBoard = boardService.save(userId,requestDto.getTitle(),file);
 
         return new ResponseEntity<>(savedBoard, HttpStatus.CREATED);
     }
 
-    @GetMapping("/workspaces/{workspace_id}/boards")
+    @GetMapping("/workspaces/{workspaceId}/boards")
     public ResponseEntity<List<BoardResponseDto>> findBoard(
-            @PathVariable Long workspace_id,
+            @PathVariable Long workspaceId,
             @Valid
             HttpServletRequest httpServletRequest){
         List<BoardResponseDto> allBoards = boardService.findAllBoards();
@@ -47,25 +53,27 @@ public class BoardController {
 
     }
 
-    @PatchMapping("/boards/{board_id}")
+    @PatchMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> update(
-            @PathVariable Long board_id,
+            @PathVariable Long boardId,
             @Valid
             @RequestPart CreateBoardRequestDto requestDto,
             @RequestPart(required = false) MultipartFile file,
             HttpServletRequest request){
-        BoardResponseDto updateBoard = boardService.updateBoard(board_id, requestDto.getTitle(), file);
+        Long userId = (Long) session.getId();
+        BoardResponseDto updateBoard = boardService.updateBoard(userId,boardId, requestDto.getTitle(), file);
 
         return new ResponseEntity<>(updateBoard, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{board_id}")
+    @DeleteMapping("/boards/{boardId}")
     public ResponseEntity<Void> update(
-            @PathVariable Long board_id,
+            @PathVariable Long boardId,
             @Valid
             HttpServletRequest request){
 
-        boardService.delete(board_id);
+        Long userId = (Long) session.getId();
+        boardService.delete(userId,boardId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

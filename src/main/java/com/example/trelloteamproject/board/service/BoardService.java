@@ -11,13 +11,13 @@ import java.util.List;
 
 @Service
 public interface BoardService {
-    CreateBoardResponseDto save(String title, MultipartFile background);
+    CreateBoardResponseDto save(Long userId, String title, MultipartFile background);
 
     Board findBoardByIdOrElseThrow(Long id);
     List<BoardResponseDto> findAllBoards();
 
 
-    BoardResponseDto updateBoard(Long board_id, String title, MultipartFile background);
+    BoardResponseDto updateBoard(Long userId,Long boardId, String title, MultipartFile background);
 
-    void delete(Long board_id);
+    void delete(Long userId, Long boardId);
 }

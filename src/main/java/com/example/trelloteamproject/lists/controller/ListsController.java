@@ -5,9 +5,11 @@ import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardRequestDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.service.BoardService;
+import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.lists.dto.ListsRequestDto;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.service.ListsService;
+import com.example.trelloteamproject.login.entity.SessionDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +25,15 @@ import java.util.List;
 public class ListsController {
     private final ListsService listsService;
 
+    SessionDto session = new SessionDto(1L, Auth.ADMIN);
+
     @PostMapping("/lists")
     public ResponseEntity<ListsResponseDto> save(
             @Valid
             @RequestBody ListsRequestDto requestDto,
             HttpServletRequest httpServlet){
+
+        Long userId = (Long) session.getId();
 //        HttpSession session = httpServlet.getSession(false);
 
 //        Long userId = (Long) session.getAttribute("userId");

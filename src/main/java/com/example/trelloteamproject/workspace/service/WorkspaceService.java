@@ -14,7 +14,7 @@ public interface WorkspaceService {
     CreateWorkspaceResponseDto save(Long userId, String title,String content);
 
     List<WorkspaceResponseDto> findAllWorkspaces();
-
+    List<WorkspaceResponseDto> findUserAndWorkspaces(Long userId);
     WorkspaceResponseDto updateWorkspace(Long userId,Long workspace_id,String title,String content);
 
     Workspace findWorkspaceByIdOrElseThrow(Long id);
