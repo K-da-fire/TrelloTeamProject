@@ -25,7 +25,6 @@ public class Board extends BaseEntity {
 
     @Setter
     @OneToOne
-    @Column(nullable = false)
     private AttachFile background;
 
     @ManyToOne

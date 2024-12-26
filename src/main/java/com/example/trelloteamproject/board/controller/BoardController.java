@@ -24,7 +24,7 @@ public class BoardController {
     @PostMapping("/boards")
     public ResponseEntity<CreateBoardResponseDto> save(
             @Valid
-            @RequestBody CreateBoardRequestDto requestDto,
+            @RequestPart CreateBoardRequestDto requestDto,
             @RequestPart(required = false) MultipartFile file,
             HttpServletRequest httpServlet){
 //        HttpSession session = httpServlet.getSession(false);
@@ -51,11 +51,12 @@ public class BoardController {
     public ResponseEntity<BoardResponseDto> update(
             @PathVariable Long board_id,
             @Valid
-            @RequestBody CreateBoardRequestDto requestDto,
+            @RequestPart CreateBoardRequestDto requestDto,
+            @RequestPart(required = false) MultipartFile file,
             HttpServletRequest request){
-        BoardResponseDto updateWorkspace = boardService.updateBoard(board_id, requestDto.getTitle(), requestDto.getBackground());
+        BoardResponseDto updateBoard = boardService.updateBoard(board_id, requestDto.getTitle(), file);
 
-        return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
+        return new ResponseEntity<>(updateBoard, HttpStatus.OK);
     }
 
     @DeleteMapping("/boards/{board_id}")

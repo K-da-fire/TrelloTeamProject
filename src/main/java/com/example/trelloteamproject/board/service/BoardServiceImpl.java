@@ -1,6 +1,7 @@
 package com.example.trelloteamproject.board.service;
 
 import com.example.trelloteamproject.awss3.entity.AttachFile;
+import com.example.trelloteamproject.awss3.service.AttachFileService;
 import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.example.trelloteamproject.board.entity.QBoard.board;
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
@@ -34,6 +36,7 @@ public class BoardServiceImpl implements BoardService {
     private final WorkspaceRepository workSpaceRepository;
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final AttachFileService attachFileService;
 
     @Override
     public CreateBoardResponseDto save(String title, MultipartFile background) {
@@ -41,10 +44,17 @@ public class BoardServiceImpl implements BoardService {
 
 //        User finduser = userService.findMemberByIdOrElseThrow(user.getId());
 
+
+        AttachFile attachFile = null;
+        if(background != null) {
+            attachFile = attachFileService.uploadFile(background);
+        }
+
         Board board = new Board(
                 title,
-                background
-        );
+                attachFile
+
+                );
 
         Board findboard = boardRepository.save(board);
         return CreateBoardResponseDto.toDto(findboard);
@@ -66,7 +76,15 @@ public class BoardServiceImpl implements BoardService {
 
         Board findBoard = boardRepository.findById(board_id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));;
 
-        findBoard.updateBoard(title,background);
+        AttachFile fileName = findBoard.getBackground();
+        if(!background.isEmpty()){
+            findBoard.setBackground(null);
+            boardRepository.save(findBoard);
+            attachFileService.deleteFile(fileName.getFileName());
+            fileName = attachFileService.uploadFile(background);
+        }
+
+        findBoard.updateBoard(title,fileName);
 
         Board savedBoard = boardRepository.save(findBoard);
 
@@ -78,6 +96,13 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void delete(Long board_id) {
         Board findBoard = findBoardByIdOrElseThrow(board_id);
+
+        AttachFile fileName = findBoard.getBackground();
+        if(fileName!=null){
+            findBoard.setBackground(null);
+            boardRepository.save(findBoard);
+            attachFileService.deleteFile(fileName.getFileName());
+        }
         boardRepository.delete(findBoard);
     }
 }
