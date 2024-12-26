@@ -1,6 +1,6 @@
 package com.example.trelloteamproject.card.entity;
 
-import com.example.trelloteamproject.card.dto.CardRequestDto;
+import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.lists.entity.Lists;
@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +27,7 @@ public class Card  extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lists_id")
     private Lists list;
 
@@ -35,16 +35,20 @@ public class Card  extends BaseEntity {
 
     private String explanation;
 
-    private String fileName;
+    @Setter
+//    @OneToOne(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
+    @JoinColumn(name = "attach_file_id")
+    private AttachFile attachFile;
 
     private LocalDateTime deadline;
 
-    public Card(User user, Lists list, String title, String explanation, String fileName, LocalDateTime deadline) {
+    public Card(User user, Lists list, String title, String explanation, AttachFile attachFile, LocalDateTime deadline) {
         this.user = user;
         this.list = list;
         this.title = title;
         this.explanation = explanation;
-        this.fileName = fileName;
+        this.attachFile = attachFile;
         this.deadline = deadline;
     }
 
@@ -53,16 +57,17 @@ public class Card  extends BaseEntity {
                 title,
                 explanation,
                 user.getName(),
+                attachFile.getFilePath(),
                 deadline,
                 getCreatedAt(),
                 getUpdatedAt()
         );
     }
 
-    public void updateCard(String title, String explanation, String fileName, LocalDateTime deadline) {
+    public void updateCard(String title, String explanation, AttachFile attachFile, LocalDateTime deadline) {
         this.title = title;
         this.explanation = explanation;
-        this.fileName = fileName;
+        this.attachFile = attachFile;
         this.deadline = deadline;
     }
 }

@@ -5,5 +5,5 @@ import java.util.List;
 import com.example.trelloteamproject.card.entity.Card;
 
 public interface CardQueryDsl {
-    List<Card> searchCards(String boardName, String title, String content, String userName, LocalDateTime deadline);
+    List<Card> searchCards(Long boardId, String title, String content, String userName, LocalDateTime deadline);
 }

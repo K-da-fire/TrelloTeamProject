@@ -1,5 +1,6 @@
 package com.example.trelloteamproject.card.dto;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,8 +12,6 @@ public class CardRequestDto {
     private String title;
 
     private String explanation;
-
-    private MultipartFile image;
 
     private LocalDateTime deadline;
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public interface CardService {
     CardResponseDto create(Long id, String title, String explanation, MultipartFile image, LocalDateTime deadline);
 
-    List<CardResponseDto> searchCards(String boardName, String title, String explanation, String userName, LocalDateTime deadline);
+    List<CardResponseDto> searchCards(Long boardId, String title, String explanation, String userName, LocalDateTime deadline);
 
     CardResponseDto findById(Long id);
 

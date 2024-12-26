@@ -1,6 +1,8 @@
 package com.example.trelloteamproject.card.service;
 
-import com.example.trelloteamproject.awss3.AwsS3FileService;
+import com.example.trelloteamproject.awss3.entity.AttachFile;
+import com.example.trelloteamproject.awss3.service.AttachFileService;
+import com.example.trelloteamproject.board.service.BoardService;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
@@ -8,8 +10,11 @@ import com.example.trelloteamproject.exception.ErrorCode;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.lists.entity.Lists;
+import com.example.trelloteamproject.lists.service.ListsService;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.service.UserService;
+import com.example.trelloteamproject.workspace.service.WorkspaceService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,20 +28,20 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final UserService userService;
-    private final AwsS3FileService awsS3FileService;
-//    private final ListService listService;
-//    private final BoardService boardService;
-//    private final WorkspaceService workspaceService;
+    private final AttachFileService attachFileService;
+    private final ListsService listsService;
+    private final BoardService boardService;
+    private final WorkspaceService workspaceService;
 
     @Override
     public CardResponseDto create(Long id, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
         User user = userService.findMemberByIdOrElseThrow(id);
         Lists list = null;
-        String fileName = "";
-        if(!image.isEmpty()){
-            fileName = awsS3FileService.uploadFile(image);
+        AttachFile attachFile = null;
+        if(image != null) {
+            attachFile = attachFileService.uploadFile(image);
         }
-        Card card = new Card(user, list, title, explanation, fileName, deadline);
+        Card card = new Card(user, list, title, explanation, attachFile, deadline);
         return cardRepository.save(card).toDto();
     }
 
@@ -45,10 +50,9 @@ public class CardServiceImpl implements CardService {
         return findByIdOrElseThrow(id).toDto();
     }
 
-    // TODO : List와 Board가 추가되었을 때 boardName 혹은 boardId로 전체 보드 조회 수정
     @Override
-    public List<CardResponseDto> searchCards(String boardName, String title, String explanation, String userName, LocalDateTime deadline) {
-        List<Card> cards = cardRepository.searchCards(boardName, title, explanation, userName, deadline);
+    public List<CardResponseDto> searchCards(Long boardId, String title, String explanation, String userName, LocalDateTime deadline) {
+        List<Card> cards = cardRepository.searchCards(boardId, title, explanation, userName, deadline);
         return cards.stream().map(Card::toDto).toList();
     }
 
@@ -57,10 +61,11 @@ public class CardServiceImpl implements CardService {
         return cardRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_CARD));
     }
 
-    // TODO : CASCADE구현을 해야합니다.
+    @Transactional
     @Override
     public String delete(Long userId, Long cardId) {
         Card card = checkManager(userId, cardId);
+        attachFileService.deleteFile(card, card.getAttachFile().getFileName());
         cardRepository.delete(card);
         return card.getTitle();
     }
@@ -68,10 +73,10 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
         Card card = checkManager(userId, cardId);
-        String fileName = card.getFileName();
+        AttachFile fileName = card.getAttachFile();
         if(!file.isEmpty()){
-            awsS3FileService.deleteFile(card.getFileName());
-            fileName = awsS3FileService.uploadFile(file);
+            attachFileService.deleteFile(card, fileName.getFileName());
+            fileName = attachFileService.uploadFile(file);
         }
         // 각 값이 주어지지 않는다면 원래값을 유지한다.
         card.updateCard(

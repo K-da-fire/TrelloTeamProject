@@ -15,6 +15,8 @@ public class CardResponseDto {
 
     private String manager;
 
+    private String filePath;
+
     private LocalDateTime deadline;
 
     private LocalDateTime createdAt;
