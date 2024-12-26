@@ -2,8 +2,7 @@ package com.example.trelloteamproject.board.entity;
 
 import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
-import com.example.trelloteamproject.lists.entity.Lists;
-import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
+
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
