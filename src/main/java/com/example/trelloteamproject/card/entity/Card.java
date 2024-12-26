@@ -3,7 +3,7 @@ package com.example.trelloteamproject.card.entity;
 import com.example.trelloteamproject.card.dto.CardRequestDto;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
-import com.example.trelloteamproject.list.entity.List;
+import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class Card  extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "list_id")
-    private List list;
+    private Lists list;
 
     private String title;
 
