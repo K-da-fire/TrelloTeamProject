@@ -39,7 +39,7 @@ public class ListsController {
 //        Long userId = (Long) session.getAttribute("userId");
 
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        ListsResponseDto savedLists = listsService.save(requestDto.getContent(),requestDto.getOrders());
+        ListsResponseDto savedLists = listsService.save(userId,requestDto.getContent(),requestDto.getOrders());
 
         return new ResponseEntity<>(savedLists, HttpStatus.CREATED);
     }
@@ -54,24 +54,26 @@ public class ListsController {
 //
 //    }
 
-    @PatchMapping("/lists/{lists_id}")
+    @PatchMapping("/lists/{listsId}")
     public ResponseEntity<ListsResponseDto> update(
-            @PathVariable Long lists_id,
+            @PathVariable Long listsId,
             @Valid
             @RequestBody ListsRequestDto requestDto,
             HttpServletRequest request){
-        ListsResponseDto updateWorkspace = listsService.updateLists(lists_id, requestDto.getContent(), requestDto.getOrders());
+        Long userId = (Long) session.getId();
+
+        ListsResponseDto updateWorkspace = listsService.updateLists(userId,listsId, requestDto.getContent(), requestDto.getOrders());
 
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
     }
 
-    @DeleteMapping("/lists/{lists_id}")
+    @DeleteMapping("/lists/{listsId}")
     public ResponseEntity<Void> delete(
-            @PathVariable Long lists_id,
+            @PathVariable Long listsId,
             @Valid
             HttpServletRequest request){
 
-        listsService.delete(lists_id);
+        listsService.delete(listsId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -136,7 +136,7 @@ public class BoardServiceImpl implements BoardService {
     private void checkRole(Long userId, Long workspaceId){
         Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
 
-        if(findInvitation.getRole().equals(Role.READ_ONLY) || (findInvitation.getRole().equals(Role.BOARD))){
+        if(findInvitation.getRole().equals(Role.READ_ONLY)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
         }
     }
