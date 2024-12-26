@@ -44,7 +44,7 @@ dependencies {
 
     // S3 연동
 //    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.1'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

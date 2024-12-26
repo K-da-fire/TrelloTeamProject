@@ -17,14 +17,14 @@ public class CardQueryDslImpl implements CardQueryDsl {
     private final JPAQueryFactory jpaQueryFactor;
 
     @Override
-    public List<Card> searchCards(String boardName, String title, String content, String userName, LocalDateTime deadline) {
+    public List<Card> searchCards(Long boardId, String title, String content, String userName, LocalDateTime deadline) {
         QCard card = QCard.card;
         
         JPAQuery<Card> query = jpaQueryFactor.selectFrom(card);
 
-//        if(boardName != null) {
-//            query = query.where(card.list.board.name.eq(boardName));
-//        }
+        if(boardId != null) {
+            query = query.where(card.list.board.id.eq(boardId));
+        }
         if(title != null){
             query = query.where(card.title.contains(title));
         }
