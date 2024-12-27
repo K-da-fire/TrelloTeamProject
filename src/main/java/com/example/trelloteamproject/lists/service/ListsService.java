@@ -20,7 +20,7 @@ public interface ListsService {
 //    List<BoardResponseDto> findAllBoards();
 
 
-    ListsResponseDto updateLists(Long userId,Long lists_id,String content,Long orders);
+    ListsResponseDto updateLists(Long userId,Long listsId,String content,Long orders);
 
-    void delete(Long lists_id);
+    void delete(Long userId,Long listsId);
 }

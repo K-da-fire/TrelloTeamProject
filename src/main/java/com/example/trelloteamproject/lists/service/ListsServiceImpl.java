@@ -36,7 +36,12 @@ public class ListsServiceImpl implements ListsService {
     public ListsResponseDto save(Long userId,String content, Long orders) {
 
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+
+
+
         Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
 
         Lists lists = new Lists(
                 content,
@@ -61,9 +66,17 @@ public class ListsServiceImpl implements ListsService {
 
 
     @Override
-    public ListsResponseDto updateLists(Long userId,Long lists_id, String content, Long orders) {
+    public ListsResponseDto updateLists(Long userId,Long listsId, String content, Long orders) {
 
-        Lists findLists = findListsByIdOrElseThrow(lists_id);
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+
+
+
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
+
+        Lists findLists = findListsByIdOrElseThrow(listsId);
 
         findLists.updateLists(content,orders);
 
@@ -75,8 +88,15 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    public void delete(Long lists_id) {
-        Lists findLists = findListsByIdOrElseThrow(lists_id);
+    public void delete(Long userId,Long listsId) {
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+
+
+
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
+        Lists findLists = findListsByIdOrElseThrow(listsId);
         listsRepository.delete(findLists);
     }
 

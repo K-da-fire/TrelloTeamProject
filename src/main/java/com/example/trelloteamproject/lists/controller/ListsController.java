@@ -72,8 +72,8 @@ public class ListsController {
             @PathVariable Long listsId,
             @Valid
             HttpServletRequest request){
-
-        listsService.delete(listsId);
+        Long userId = (Long) session.getId();
+        listsService.delete(userId,listsId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
