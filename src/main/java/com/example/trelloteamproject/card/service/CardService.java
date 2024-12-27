@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public interface CardService {
-    CardResponseDto create(Long id, String title, String explanation, MultipartFile image, LocalDateTime deadline);
+    CardResponseDto create(Long userId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline);
 
     List<CardResponseDto> searchCards(Long boardId, String title, String explanation, String userName, LocalDateTime deadline);
 
