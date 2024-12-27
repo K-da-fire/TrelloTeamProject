@@ -46,6 +46,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByIdOrElseThrow(Long id){
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+        if(user.getDeletedAt() != null){
+            throw new InvalidInputException(DELETED_USER);
+        }
+        return user;
     }
 }
