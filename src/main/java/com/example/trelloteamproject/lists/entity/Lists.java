@@ -2,12 +2,17 @@ package com.example.trelloteamproject.lists.entity;
 
 import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
+import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +32,10 @@ public class Lists extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
+//    @JsonIgnoreProperties({"list"})
+    @BatchSize(size = 3)
+    @OneToMany(mappedBy = "list", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Card> cards;
 
     public Lists(String content, Long order) {
         this.content = content;

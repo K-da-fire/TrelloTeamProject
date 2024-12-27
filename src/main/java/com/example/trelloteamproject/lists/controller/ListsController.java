@@ -10,6 +10,7 @@ import com.example.trelloteamproject.lists.dto.ListsRequestDto;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.service.ListsService;
 import com.example.trelloteamproject.login.entity.SessionDto;
+import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,19 @@ public class ListsController {
         return new ResponseEntity<>(boardAndLists,HttpStatus.OK);
 
     }
+//    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
+//    public ResponseEntity<List<ShowResponseDto>> oneBoard(
+//            @PathVariable Long workspaceId,
+//            @PathVariable Long boardId,
+//
+//            @Valid
+//            HttpServletRequest httpServletRequest){
+//        Long userId = (Long) session.getId();
+//
+////        List<ShowResponseDto> allBoards = boardService.findOne(workspaceId,boardId,userId);
+////        return new ResponseEntity<>(allBoards,HttpStatus.OK);
+//
+//    }
 
     @PatchMapping("/lists/{listsId}")
     public ResponseEntity<ListsResponseDto> update(

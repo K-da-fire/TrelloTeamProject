@@ -24,7 +24,7 @@ public class CreateBoardResponseDto {
         return new CreateBoardResponseDto(
                 board.getId(),
                 board.getTitle(),
-                board.getBackground().getFileName()
+                board.getBackground() == null? "": board.getBackground().getFileName()
         );
     }
 }

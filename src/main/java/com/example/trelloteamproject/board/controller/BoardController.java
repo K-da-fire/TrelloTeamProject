@@ -6,7 +6,9 @@ import com.example.trelloteamproject.board.dto.CreateBoardRequestDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.service.BoardService;
 import com.example.trelloteamproject.common.Auth;
+import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.login.entity.SessionDto;
+import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +42,12 @@ public class BoardController {
 
         CreateBoardResponseDto savedBoard = boardService.save(workspaceId,userId,requestDto.getTitle(),file);
 
+
         return new ResponseEntity<>(savedBoard, HttpStatus.CREATED);
     }
 
-    @GetMapping("/workspaces/{workspaceId}/boards")
+    @GetMapping("/workspaces/boards")
     public ResponseEntity<List<BoardResponseDto>> findBoards(
-            @PathVariable Long workspaceId,
             @Valid
             HttpServletRequest httpServletRequest){
         Long userId = (Long) session.getId();
@@ -55,19 +57,29 @@ public class BoardController {
 
     }
 
-    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
-    public ResponseEntity<List<BoardResponseDto>> oneBoard(
+    @GetMapping("/workspaces/{workspaceId}/boards")
+    public ResponseEntity<List<BoardResponseDto>> findWorkspaceAndBoards(
             @PathVariable Long workspaceId,
-            @PathVariable Long boardId,
-
             @Valid
             HttpServletRequest httpServletRequest){
         Long userId = (Long) session.getId();
 
-        List<BoardResponseDto> allBoards = boardService.findOne(workspaceId,boardId,userId);
-        return new ResponseEntity<>(allBoards,HttpStatus.OK);
+        List<BoardResponseDto> findBoards = boardService.findWorkspaceAndBoards(userId, workspaceId);
+        return new ResponseEntity<>(findBoards,HttpStatus.OK);
 
     }
+
+//    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
+//    public ResponseEntity<List<ShowResponseDto>> oneBoard(
+//            @PathVariable Long workspaceId,
+//            @PathVariable Long boardId,
+//            HttpServletRequest httpServletRequest){
+//        Long userId = (Long) session.getId();
+//
+//        List<ShowResponseDto> allBoards = boardService.findOne(workspaceId,boardId);
+//        return new ResponseEntity<>(allBoards,HttpStatus.OK);
+//
+//    }
 
     @PatchMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> update(

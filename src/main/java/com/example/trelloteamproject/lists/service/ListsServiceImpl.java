@@ -1,7 +1,5 @@
 package com.example.trelloteamproject.lists.service;
 
-import com.example.trelloteamproject.board.dto.BoardResponseDto;
-import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.board.repository.BoardRepository;
 import com.example.trelloteamproject.board.service.BoardService;
@@ -13,10 +11,8 @@ import com.example.trelloteamproject.invitation.service.InvitationService;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.repository.ListsRepository;
-import com.example.trelloteamproject.user.service.UserService;
-import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
+import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
-import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import com.example.trelloteamproject.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,12 +29,13 @@ public class ListsServiceImpl implements ListsService {
     private final WorkspaceService workspaceService;
     private final ListsRepository listsRepository;
     private final InvitationService invitationService;
+    private final BoardRepository boardRepository;
     private final BoardService boardService;
 
     @Override
     public ListsResponseDto save(Long userId,Long boardId,String content, Long orders) {
 
-        Board findBoard = boardService.findBoardByIdOrElseThrow(boardId);
+        Board findBoard = boardRepository.findById(boardId).get();
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
 
 
@@ -76,6 +73,21 @@ public class ListsServiceImpl implements ListsService {
 //        List<Long> ids = findBoards.stream().map(Board::getId).toList();
 
         return listsRepository.findAllByBoardId(boardId).stream().map(ListsResponseDto::toDto).toList();
+    }
+
+    @Override
+    public List<ListsResponseDto> findOne(Long workspaceId, Long boardId, Long userId) {
+
+        Board findBoard = boardService.findBoardByIdOrElseThrow(boardId);
+        Lists findLists = findListsByIdOrElseThrow(findBoard.getId());
+
+
+        return listsRepository.findListsByCardsId(findLists.getId()).stream().map(ListsResponseDto::toDto).toList();
+
+//
+//        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
+//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
+
     }
 
     @Override

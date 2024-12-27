@@ -4,8 +4,10 @@ package com.example.trelloteamproject.lists.service;
 import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
+import com.example.trelloteamproject.lists.dto.ListsCardResponseDto;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.entity.Lists;
+import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public interface ListsService {
 
     List<ListsResponseDto> findBoardAndLists(Long boardId);
 
+    List<ListsResponseDto> findOne(Long workspaceId, Long boardId, Long userId);
 
     List<ListsResponseDto>findAllLists();
 

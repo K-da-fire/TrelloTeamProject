@@ -6,6 +6,8 @@ import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.board.repository.BoardRepository;
+import com.example.trelloteamproject.card.entity.Card;
+import com.example.trelloteamproject.card.service.CardService;
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
@@ -13,6 +15,11 @@ import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.entity.Invitation;
 import com.example.trelloteamproject.invitation.repository.InvitationRepository;
 import com.example.trelloteamproject.invitation.service.InvitationService;
+import com.example.trelloteamproject.lists.dto.ListsResponseDto;
+import com.example.trelloteamproject.lists.entity.Lists;
+import com.example.trelloteamproject.lists.repository.ListsRepository;
+import com.example.trelloteamproject.lists.service.ListsService;
+import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
 import com.example.trelloteamproject.user.service.UserService;
@@ -37,22 +44,18 @@ public class BoardServiceImpl implements BoardService {
 
     private final WorkspaceService workspaceService;
     private final BoardRepository boardRepository;
-    private final UserService userService;
     private final InvitationService invitationService;
     private final AttachFileService attachFileService;
+
 
     @Override
     public CreateBoardResponseDto save(Long workspaceId,Long userId, String title, MultipartFile background) {
 
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
-
-
         Long findWorkspaceId =findWorkspace.getId();
 
         checkRole(userId, findWorkspaceId);
-
-
 
         AttachFile attachFile = null;
         if(background != null) {
@@ -83,11 +86,31 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }
-    @Override
-    public List<BoardResponseDto> findOne(Long workspaceId, Long boardId,Long userId) {
-        
 
-        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
+    @Override
+    public List<BoardResponseDto> findWorkspaceAndBoards(Long userId,Long workspaceId) {
+
+//        User findUser = userService.findMemberByIdOrElseThrow(userId);
+//
+//        if(findUser.getId().equals())
+        return boardRepository.findAllByWorkspaceId(workspaceId).stream().map(BoardResponseDto::toDto).toList();
+
+    }
+    @Override
+    public List<BoardResponseDto> findOne(Long workspaceId, Long boardId) {
+
+        // TODO 3 : 두 dto를 연결
+        // 하나는 지금 List<Card>
+        // 하나는 지금 List<Lists>
+        // -> List<Lists> + List<Card> -> Lists.Id
+        // 저 두 dto 를 연결해줘야해요
+
+        Board findBoard = findBoardByIdOrElseThrow(boardId);
+
+        return boardRepository.findBoardByListsAndCard(findBoard.getId()).stream().map(BoardResponseDto::toDto).toList();
+
+//        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
+//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }
 
