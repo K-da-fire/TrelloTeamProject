@@ -65,4 +65,29 @@ public class LoginServiceImpl implements LoginService {
         return MemberResponseDto.toDto(user, token);
     }
 
+
+    // JWT 토큰을 이용한 회원 탈퇴 처리
+    @Override
+    public void deleteAccount(String token, String password) {
+        // JWT 토큰 검증 및 사용자 정보 추출
+        String email = jwtTokenProvider.getUsername(token);
+
+        // 유저 아이디로 회원 정보 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+
+        // 탈퇴한 유저인지 확인
+        if (user.isDeleted()) {
+            throw new InvalidInputException(DELETED_USER);
+        }
+
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidInputException(WRONG_PASSWORD);
+        }
+
+        // 탈퇴 처리
+        user.setDeleted(true); // deleted 플래그 설정
+        userRepository.save(user);
+    }
 }
