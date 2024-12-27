@@ -47,12 +47,4 @@ public class GlobalExceptionController {
         String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return new ResponseEntity<>(new ExceptionResponseDto(HttpStatus.BAD_REQUEST, message), HttpStatus.BAD_REQUEST);
     }
-
-//  @ExceptionHandler
-//  public
-
-//  @ExceptionHandler(Exception.class)
-//  public ResponseEntity<String> constraintViolationException(Exception e) {
-//    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//  }
 }

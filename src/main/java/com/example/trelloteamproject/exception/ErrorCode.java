@@ -16,6 +16,11 @@ public enum ErrorCode {
     // 이미 삭제된 사용자가 조회 되었을 때 출력하는 오류 메시지
     DELETED_USER("이미 삭제된 회원입니다.", HttpStatus.BAD_REQUEST),
 
+    // NotFoundException
+    NOT_FOUND_MEMBER("멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_FOUND_CARD("카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_FOUND_FILE("파일를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // InternalServerException
     //세션이 만료되었을 때 출력하는 오류 메시지
     SESSION_TIMEOUT("세션이 만료되었습니다.", HttpStatus.SERVICE_UNAVAILABLE),
