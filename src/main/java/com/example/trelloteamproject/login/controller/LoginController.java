@@ -1,5 +1,6 @@
 package com.example.trelloteamproject.login.controller;
 
+import com.example.trelloteamproject.login.dto.LoginRequestDto;
 import com.example.trelloteamproject.login.dto.MemberRequestDto;
 import com.example.trelloteamproject.login.dto.MemberResponseDto;
 import com.example.trelloteamproject.login.service.LoginService;
@@ -24,5 +25,17 @@ public class LoginController {
             @Valid @RequestBody MemberRequestDto userRequestDto
     ) {
         return ResponseEntity.ok().body(loginService.signUp(userRequestDto.getEmail(), userRequestDto.getPassword(), userRequestDto.getName(), userRequestDto.getAuth()));
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<MemberResponseDto> login(
+            @Valid @RequestBody LoginRequestDto userRequestDto
+    ) {
+        MemberResponseDto responseDto = loginService.login(
+                userRequestDto.getEmail(),
+                userRequestDto.getPassword()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 }

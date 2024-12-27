@@ -1,32 +1,68 @@
 package com.example.trelloteamproject.login.service;
 
+
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.exception.DuplicatedException;
+import com.example.trelloteamproject.exception.InvalidInputException;
+import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.login.dto.MemberResponseDto;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
+import com.example.trelloteamproject.util.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.example.trelloteamproject.exception.ErrorCode.EMAIL_EXIST;
+import static com.example.trelloteamproject.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public MemberResponseDto signUp(String email, String password, String name, Auth auth) {
         if(userRepository.existsByEmail(email)){
             throw new DuplicatedException(EMAIL_EXIST);
         }
-        User user = userRepository.save( new User(
+
+        String encodePassword = passwordEncoder.encoder(password);
+
+        User user = userRepository.save(new User(
                 email,
                 password,
                 name,
                 auth
         ));
-        return MemberResponseDto.toDto(user);
+
+
+        return MemberResponseDto.toDto(user, null);
     }
+
+    @Override
+    public MemberResponseDto login(String email, String password) {
+        // 이메일로 사용자 검색
+        System.out.println("Logging in user: " + email);  // 로그 찍기
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            System.out.println("Password mismatch for user: " + email);  // 로그 찍기
+
+            throw new InvalidInputException(WRONG_PASSWORD);
+        }
+
+        // JWT 토큰 생성
+        String token = jwtTokenProvider.createToken(user.getEmail(), user.getAuth(), 60*60*10L);
+        System.out.println("Generated token: " + token);  // 로그 찍기
+
+        // 로그인 성공 시 응답 DTO 생성 (token 포함)
+        return MemberResponseDto.toDto(user, token);
+    }
+
 }

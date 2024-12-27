@@ -1,6 +1,5 @@
 package com.example.trelloteamproject.login.dto;
 
-import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.common.Auth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
