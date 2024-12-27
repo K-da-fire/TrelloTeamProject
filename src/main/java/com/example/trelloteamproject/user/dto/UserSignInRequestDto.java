@@ -1,6 +1,5 @@
-package com.example.trelloteamproject.login.dto;
+package com.example.trelloteamproject.user.dto;
 
-import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.common.Auth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class MemberRequestDto {
+public class UserSignInRequestDto {
 
     @NotBlank(message = "이메일은 필수값입니다.")
     @Size(max = 100, message = "이메일은 최대 100글자 입니다.")

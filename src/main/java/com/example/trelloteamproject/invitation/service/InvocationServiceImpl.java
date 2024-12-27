@@ -1,6 +1,5 @@
 package com.example.trelloteamproject.invitation.service;
 import com.example.trelloteamproject.common.Role;
-import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.dto.InvitationResponseDto;
 import com.example.trelloteamproject.invitation.entity.Invitation;
@@ -12,8 +11,7 @@ import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
-import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
+import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +23,14 @@ public class InvocationServiceImpl implements InvitationService {
 
     @Override
     public Invitation findInvocationByUserAndWorkspaceIdOrElseThrow(Long userId,Long workspaceId) {
-        return invitationRepository.findByUserIdAndWorkspaceId(userId,workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return invitationRepository.findByUserIdAndWorkspaceId(userId,workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
     }
 
     @Override
     public InvitationResponseDto save(String email, Long workspaceId, Role role) {
         User finduser = userRepository.findByEmail(email);
 
-        Workspace findWorkspaceId = workspaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        Workspace findWorkspaceId = workspaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
 
         Invitation invitation = new Invitation(finduser,findWorkspaceId,role);
