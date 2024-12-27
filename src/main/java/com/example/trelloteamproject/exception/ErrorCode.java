@@ -17,7 +17,7 @@ public enum ErrorCode {
     DELETED_USER("이미 삭제된 회원입니다.", HttpStatus.BAD_REQUEST),
 
     // NotFoundException
-    NOT_FOUND_MEMBER("멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_FOUND_USER("유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     NOT_FOUND_CARD("카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     NOT_FOUND_FILE("파일를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 

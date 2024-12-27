@@ -1,4 +1,4 @@
-package com.example.trelloteamproject.login.dto;
+package com.example.trelloteamproject.user.dto;
 
 import com.example.trelloteamproject.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -6,14 +6,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MemberResponseDto {
+public class UserResponseDto {
 
     private String email;
 
     private String name;
 
-    public static MemberResponseDto toDto(User user) {
-        return new MemberResponseDto(
+    public static UserResponseDto toDto(User user) {
+        return new UserResponseDto(
                 user.getEmail(),
                 user.getName()
         );

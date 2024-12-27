@@ -4,8 +4,6 @@ import com.example.trelloteamproject.card.dto.CardRequestDto;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.service.CardService;
 import com.example.trelloteamproject.common.Auth;
-import com.example.trelloteamproject.common.LoginStatus;
-import com.example.trelloteamproject.login.dto.MemberResponseDto;
 import com.example.trelloteamproject.login.entity.SessionDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
