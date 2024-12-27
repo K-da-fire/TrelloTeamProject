@@ -1,5 +1,6 @@
 package com.example.trelloteamproject.board.dto;
 
+import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
@@ -23,7 +24,7 @@ public class CreateBoardResponseDto {
         return new CreateBoardResponseDto(
                 board.getId(),
                 board.getTitle(),
-                board.getBackground()
+                board.getBackground() == null? "": board.getBackground().getFileName()
         );
     }
 }

@@ -1,35 +1,53 @@
 package com.example.trelloteamproject.lists.service;
 
+import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.board.repository.BoardRepository;
+import com.example.trelloteamproject.board.service.BoardService;
+import com.example.trelloteamproject.common.Role;
+import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
+import com.example.trelloteamproject.invitation.entity.Invitation;
+import com.example.trelloteamproject.invitation.service.InvitationService;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.repository.ListsRepository;
-import com.example.trelloteamproject.user.service.UserService;
-import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
+import com.example.trelloteamproject.show.dto.ShowResponseDto;
+import com.example.trelloteamproject.workspace.entity.Workspace;
+import com.example.trelloteamproject.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
+import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
 @Service
 @RequiredArgsConstructor
 public class ListsServiceImpl implements ListsService {
 
-    private final WorkspaceRepository workSpaceRepository;
-    private final BoardRepository boardRepository;
-    private final UserService userService;
+    private final WorkspaceService workspaceService;
     private final ListsRepository listsRepository;
+    private final InvitationService invitationService;
+    private final BoardRepository boardRepository;
+    private final BoardService boardService;
 
     @Override
-    public ListsResponseDto save(String content, Long orders) {
+    public ListsResponseDto save(Long userId,Long boardId,String content, Long orders) {
+
+        Board findBoard = boardRepository.findById(boardId).get();
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
 
 
-//        User finduser = userService.findUserByIdOrElseThrow(user.getId());
+
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
 
         Lists lists = new Lists(
                 content,
-                orders
+                orders,
+                findBoard
         );
 
         Lists findLists = listsRepository.save(lists);
@@ -42,17 +60,48 @@ public class ListsServiceImpl implements ListsService {
 
     }
 
-//    @Override
-//    public List<BoardResponseDto> findAllBoards() {
-//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
-//
-//    }
 
 
     @Override
-    public ListsResponseDto updateLists(Long lists_id, String content, Long orders) {
+    public List<ListsResponseDto> findAllLists() {
+        return listsRepository.findAll().stream().map(ListsResponseDto::toDto).toList();
 
-        Lists findLists = findListsByIdOrElseThrow(lists_id);
+    }
+    @Override
+    public List<ListsResponseDto> findBoardAndLists(Long boardId) {
+//        List<Board> findBoards = boardService.findBoardId(boardId);
+//        List<Long> ids = findBoards.stream().map(Board::getId).toList();
+
+        return listsRepository.findAllByBoardId(boardId).stream().map(ListsResponseDto::toDto).toList();
+    }
+
+    @Override
+    public List<ListsResponseDto> findOne(Long workspaceId, Long boardId, Long userId) {
+
+        Board findBoard = boardService.findBoardByIdOrElseThrow(boardId);
+        Lists findLists = findListsByIdOrElseThrow(findBoard.getId());
+
+
+        return listsRepository.findListsByCardsId(findLists.getId()).stream().map(ListsResponseDto::toDto).toList();
+
+//
+//        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
+//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
+
+    }
+
+    @Override
+    public ListsResponseDto updateLists(Long userId,Long listsId, String content, Long orders) {
+
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+
+
+
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
+
+        Lists findLists = findListsByIdOrElseThrow(listsId);
 
         findLists.updateLists(content,orders);
 
@@ -64,8 +113,23 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    public void delete(Long lists_id) {
-        Lists findLists = findListsByIdOrElseThrow(lists_id);
+    public void delete(Long userId,Long listsId) {
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+
+
+
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
+        Lists findLists = findListsByIdOrElseThrow(listsId);
         listsRepository.delete(findLists);
+    }
+
+    private void checkRole(Long userId, Long workspaceId){
+        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
+
+        if(findInvitation.getRole().equals(Role.READ_ONLY)){
+            throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
+        }
     }
 }

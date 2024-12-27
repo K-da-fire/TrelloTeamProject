@@ -2,7 +2,9 @@ package com.example.trelloteamproject.workspace.entity;
 
 import com.example.trelloteamproject.common.BaseEntity;
 import com.example.trelloteamproject.invitation.entity.Invitation;
+import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +28,10 @@ public class Workspace extends BaseEntity {
 
     @Column(nullable = false)
     private String  content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User user;
 
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invitation> invitations = new ArrayList<>();

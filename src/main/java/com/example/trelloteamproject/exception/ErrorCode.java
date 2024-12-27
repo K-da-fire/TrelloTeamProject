@@ -16,7 +16,7 @@ public enum ErrorCode {
     // 이미 삭제된 사용자가 조회 되었을 때 출력하는 오류 메시지
     DELETED_USER("이미 삭제된 회원입니다.", HttpStatus.BAD_REQUEST),
 
-    // NotFoundException
+    // Exception
     NOT_FOUND_USER("유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     NOT_FOUND_CARD("카드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     NOT_FOUND_FILE("파일를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

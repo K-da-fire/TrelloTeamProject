@@ -6,7 +6,9 @@ import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.entity.Invitation;
+import com.example.trelloteamproject.invitation.repository.InvitationRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.trelloteamproject.invitation.service.InvitationService;
@@ -30,16 +32,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceRepository workSpaceRepository;
     private final InvitationService invitationService;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @Transactional
     @Override
     public CreateWorkspaceResponseDto save(Long userId, String title, String content) {
 
-
-
         User finduser = userService.findUserByIdOrElseThrow(userId);
+
         if(!finduser.getAuth().equals(Auth.ADMIN)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
         }
@@ -54,6 +54,27 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public List<WorkspaceResponseDto> findAllWorkspaces() {
         return workSpaceRepository.findAll().stream().map(WorkspaceResponseDto::toDto).toList();
+
+    }
+
+    @Override
+    public List<WorkspaceResponseDto> findUserAndWorkspaces(Long userId) {
+        List<Invitation> findInvitation = invitationService.findByUserIdOrElseThrow(userId);
+
+
+
+        List<Long> ids = findInvitation.stream().map(Invitation::getId).toList();
+        return workSpaceRepository.findAllByIdIn(ids).stream().map(WorkspaceResponseDto::toDto).toList();
+
+
+//        ArrayList<WorkspaceResponseDto> result = new ArrayList<>();
+//
+//        for (Workspace w : workspaces) {
+//            WorkspaceResponseDto dto = new WorkspaceResponseDto(w.getId(), w.getTitle(), w.getContent());
+//            result.add(dto);
+//        }
+//        return result;
+
 
     }
 
