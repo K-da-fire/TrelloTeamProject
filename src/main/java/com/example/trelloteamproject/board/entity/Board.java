@@ -36,7 +36,7 @@ public class Board extends BaseEntity {
     private AttachFile background;
 
     @ManyToOne
-    @JoinColumn(name = "workplace_id")
+    @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
 //    @JsonIgnoreProperties({"board"})
