@@ -25,7 +25,7 @@ public class Board extends BaseEntity {
     private String background;
 
     @ManyToOne
-    @JoinColumn(name = "workplace_id")
+    @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
     public Board(String title, String background) {

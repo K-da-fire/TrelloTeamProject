@@ -3,6 +3,8 @@ package com.example.trelloteamproject.card.entity;
 import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
+import com.example.trelloteamproject.exception.ErrorCode;
+import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.user.entity.User;
 import jakarta.persistence.*;
@@ -36,8 +38,7 @@ public class Card  extends BaseEntity {
     private String explanation;
 
     @Setter
-//    @OneToOne(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attach_file_id")
     private AttachFile attachFile;
 
@@ -56,8 +57,8 @@ public class Card  extends BaseEntity {
         return new CardResponseDto(
                 title,
                 explanation,
-                user.getName(),
-                attachFile.getFilePath(),
+                this.user.getName(),
+                (attachFile != null)? attachFile.getFilePath() : "",
                 deadline,
                 getCreatedAt(),
                 getUpdatedAt()
@@ -69,5 +70,11 @@ public class Card  extends BaseEntity {
         this.explanation = explanation;
         this.attachFile = attachFile;
         this.deadline = deadline;
+    }
+
+    public void checkAuth(Long userId){
+        if(!this.user.getId().equals(userId)){
+            throw new NoAuthorizedException(ErrorCode.NO_AUTHOR_CHANGE);
+        }
     }
 }

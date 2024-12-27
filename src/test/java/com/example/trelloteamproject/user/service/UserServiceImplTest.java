@@ -8,11 +8,11 @@ import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.user.dto.UserResponseDto;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
-import org.hibernate.annotations.processing.SQL;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
-//@Sql(scripts = "classpath:/db/init_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:/db/init_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
 @SpringBootTest
 class UserServiceImplTest {
@@ -37,7 +37,7 @@ class UserServiceImplTest {
     @DisplayName("회원 가입 성공")
     void signUp() {
         // Given
-        String email = "test@test.com";
+        String email = "test1@test.com";
         String password = "test";
         String name = "name";
         Auth auth = Auth.ADMIN;
@@ -46,6 +46,9 @@ class UserServiceImplTest {
         // Then
         assertNotNull(userResponseDto);
         assertEquals(userResponseDto.getEmail(), email);
+        /**
+         * password 가 잘 encod 되었는지
+         */
     }
 
     @Test
@@ -53,15 +56,12 @@ class UserServiceImplTest {
     void signUpFailExistsEmail() {
         // Given
         String email = "test@test.com";
-        String password = "test";
-        String name = "name";
         Auth auth = Auth.ADMIN;
-        userService.signUp(email, password, name, auth);
         // When
-        Throwable thrown = catchThrowable(() -> userService.signUp(email, "password", "name", auth));
         // Then
-        assertThat(thrown)
-                .isInstanceOf(DuplicatedException.class);
+        DuplicatedException throwable = assertThrows(DuplicatedException.class,
+                () -> userService.signUp(email, "password", "name", auth));
+        assertThat(throwable.getErrorCode()).isEqualTo(EMAIL_EXIST);
     }
 
     @Test
