@@ -35,7 +35,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardResponseDto create(Long id, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
-        User user = userService.findMemberByIdOrElseThrow(id);
+        User user = userService.findUserByIdOrElseThrow(id);
         Lists list = null;
         AttachFile attachFile = null;
         if(image != null) {

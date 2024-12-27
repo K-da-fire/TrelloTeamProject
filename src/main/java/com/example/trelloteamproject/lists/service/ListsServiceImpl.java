@@ -1,8 +1,5 @@
 package com.example.trelloteamproject.lists.service;
 
-import com.example.trelloteamproject.board.dto.BoardResponseDto;
-import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
-import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.board.repository.BoardRepository;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
@@ -13,9 +10,7 @@ import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +25,7 @@ public class ListsServiceImpl implements ListsService {
     public ListsResponseDto save(String content, Long orders) {
 
 
-//        User finduser = userService.findMemberByIdOrElseThrow(user.getId());
+//        User finduser = userService.findUserByIdOrElseThrow(user.getId());
 
         Lists lists = new Lists(
                 content,
@@ -43,7 +38,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists findListsByIdOrElseThrow(Long id) {
-        return listsRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return listsRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
     }
 
