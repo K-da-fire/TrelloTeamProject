@@ -21,6 +21,8 @@ public class LoginServiceImpl implements LoginService {
         if(userRepository.existsByEmail(email)){
             throw new DuplicatedException(EMAIL_EXIST);
         }
+
+
         User user = userRepository.save( new User(
                 email,
                 password,

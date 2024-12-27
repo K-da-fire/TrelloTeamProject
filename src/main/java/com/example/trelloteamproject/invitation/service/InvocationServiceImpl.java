@@ -12,6 +12,8 @@ import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
@@ -43,5 +45,10 @@ public class InvocationServiceImpl implements InvitationService {
 
 
 
+    }
+
+    @Override
+    public List<Invitation> findByUserIdOrElseThrow(Long userId) {
+        return invitationRepository.findByUserId(userId);
     }
 }

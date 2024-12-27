@@ -45,8 +45,21 @@ public class WorkspaceController {
     public ResponseEntity<List<WorkspaceResponseDto>> findAll(
             @Valid
             HttpServletRequest httpServletRequest){
+
+        Long userId = (Long) session.getId();
+
         List<WorkspaceResponseDto> allWorkspaces = workspaceService.findAllWorkspaces();
         return new ResponseEntity<>(allWorkspaces,HttpStatus.OK);
+    }
+    @GetMapping("/users2")
+    public ResponseEntity<List<WorkspaceResponseDto>> findWorkspace(
+            @Valid
+            HttpServletRequest httpServletRequest){
+
+        Long userId = (Long) session.getId();
+
+        List<WorkspaceResponseDto> findWorkspace = workspaceService.findUserAndWorkspaces(userId);
+        return new ResponseEntity<>(findWorkspace,HttpStatus.OK);
     }
     @PatchMapping("/{workspaceId}")
     public ResponseEntity<WorkspaceResponseDto> update(

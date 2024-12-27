@@ -1,5 +1,7 @@
 package com.example.trelloteamproject.board.service;
 
+import com.example.trelloteamproject.awss3.entity.AttachFile;
+import com.example.trelloteamproject.awss3.service.AttachFileService;
 import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
@@ -10,6 +12,7 @@ import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.entity.Invitation;
 import com.example.trelloteamproject.invitation.repository.InvitationRepository;
+import com.example.trelloteamproject.invitation.service.InvitationService;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
 import com.example.trelloteamproject.user.service.UserService;
@@ -17,11 +20,14 @@ import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
+import com.example.trelloteamproject.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.example.trelloteamproject.board.entity.QBoard.board;
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
@@ -29,21 +35,39 @@ import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
-    private final WorkspaceRepository workSpaceRepository;
+    private final WorkspaceService workspaceService;
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final InvitationService invitationService;
+    private final AttachFileService attachFileService;
 
     @Override
-    public CreateBoardResponseDto save(String title, String background) {
+    public CreateBoardResponseDto save(Long userId, String title, MultipartFile background) {
+
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
 
 
-//        User finduser = userService.findMemberByIdOrElseThrow(user.getId());
+
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
+
+
+
+        AttachFile attachFile = null;
+        if(background != null) {
+            attachFile = attachFileService.uploadFile(background);
+        }
 
         Board board = new Board(
                 title,
-                background
-        );
+                attachFile
 
+                );
+
+        if(title==null){
+            throw new NotFoundException(NOT_FOUND_MEMBER);
+        }
         Board findboard = boardRepository.save(board);
         return CreateBoardResponseDto.toDto(findboard);
     }
@@ -60,12 +84,29 @@ public class BoardServiceImpl implements BoardService {
 
     }
     @Override
-    public BoardResponseDto updateWorkspace(Long board_id, String title, String background) {
+    public BoardResponseDto updateBoard(Long userId, Long boardId, String title, MultipartFile background) {
 
-        Board findBoard = boardRepository.findById(board_id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));;
 
-        findBoard.updateBoard(title,background);
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+        Long workspaceId =findWorkspace.getId();
 
+        checkRole(userId, workspaceId);
+
+        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));;
+
+        AttachFile fileName = findBoard.getBackground();
+        if(!background.isEmpty()){
+            findBoard.setBackground(null);
+            boardRepository.save(findBoard);
+            attachFileService.deleteFile(fileName.getFileName());
+            fileName = attachFileService.uploadFile(background);
+        }
+
+        findBoard.updateBoard(title,fileName);
+
+        if(title==null){
+            throw new NotFoundException(NOT_FOUND_MEMBER);
+        }
         Board savedBoard = boardRepository.save(findBoard);
 
 
@@ -74,8 +115,29 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public void delete(Long board_id) {
-        Board findBoard = findBoardByIdOrElseThrow(board_id);
+    public void delete(Long userId, Long boardId) {
+
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+        Long workspaceId =findWorkspace.getId();
+
+        checkRole(userId, workspaceId);
+
+        Board findBoard = findBoardByIdOrElseThrow(boardId);
+
+        AttachFile fileName = findBoard.getBackground();
+        if(fileName!=null){
+            findBoard.setBackground(null);
+            boardRepository.save(findBoard);
+            attachFileService.deleteFile(fileName.getFileName());
+        }
         boardRepository.delete(findBoard);
+    }
+
+    private void checkRole(Long userId, Long workspaceId){
+        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
+
+        if(findInvitation.getRole().equals(Role.READ_ONLY)){
+            throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
+        }
     }
 }
