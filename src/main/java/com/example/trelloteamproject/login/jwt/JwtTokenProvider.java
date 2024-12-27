@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -18,7 +17,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private SecretKey secretKey;
+    private final SecretKey secretKey;
 
     public JwtTokenProvider(@Value("${spring.jwt.service:mySuperSecretKey12345LongEnoughkkkkkKKKKK}") String secret) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
