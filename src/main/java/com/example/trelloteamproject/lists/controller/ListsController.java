@@ -27,8 +27,9 @@ public class ListsController {
 
     SessionDto session = new SessionDto(1L, Auth.ADMIN);
 
-    @PostMapping("/lists")
+    @PostMapping("/{boardId}/lists")
     public ResponseEntity<ListsResponseDto> save(
+            @PathVariable Long boardId,
             @Valid
             @RequestBody ListsRequestDto requestDto,
             HttpServletRequest httpServlet){
@@ -39,7 +40,7 @@ public class ListsController {
 //        Long userId = (Long) session.getAttribute("userId");
 
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        ListsResponseDto savedLists = listsService.save(userId,requestDto.getContent(),requestDto.getOrders());
+        ListsResponseDto savedLists = listsService.save(userId,boardId,requestDto.getContent(),requestDto.getOrders());
 
         return new ResponseEntity<>(savedLists, HttpStatus.CREATED);
     }
@@ -53,7 +54,7 @@ public class ListsController {
 
     }
 
-    @GetMapping("/{boardId}/listsB")
+    @GetMapping("/{boardId}/lists")
     public ResponseEntity<List<ListsResponseDto>> findListB(
             @PathVariable Long boardId,
             @Valid

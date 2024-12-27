@@ -13,5 +13,7 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
 
 //    List<WorkspaceResponseDto> findAllByUserId(Long id);
 
-    List<Lists> findAllByIdIn(List<Long> id);
+    List<Lists> findAllByBoardIdIn(List<Long> boardId);
+
+    List<Lists> findAllByBoardId(Long boardId);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 public interface ListsService {
-    ListsResponseDto save(Long userId,String content, Long orders);
+    ListsResponseDto save(Long userId,Long boardId,String content, Long orders);
 
     Lists findListsByIdOrElseThrow(Long id);
 

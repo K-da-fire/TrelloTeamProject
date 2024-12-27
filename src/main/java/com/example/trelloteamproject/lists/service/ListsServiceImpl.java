@@ -36,8 +36,9 @@ public class ListsServiceImpl implements ListsService {
     private final BoardService boardService;
 
     @Override
-    public ListsResponseDto save(Long userId,String content, Long orders) {
+    public ListsResponseDto save(Long userId,Long boardId,String content, Long orders) {
 
+        Board findBoard = boardService.findBoardByIdOrElseThrow(boardId);
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
 
 
@@ -48,7 +49,8 @@ public class ListsServiceImpl implements ListsService {
 
         Lists lists = new Lists(
                 content,
-                orders
+                orders,
+                findBoard
         );
 
         Lists findLists = listsRepository.save(lists);
@@ -70,10 +72,10 @@ public class ListsServiceImpl implements ListsService {
     }
     @Override
     public List<ListsResponseDto> findBoardAndLists(Long boardId) {
-        List<Board> findBoards = boardService.findBoardId(boardId);
-        List<Long> ids = findBoards.stream().map(Board::getId).toList();
+//        List<Board> findBoards = boardService.findBoardId(boardId);
+//        List<Long> ids = findBoards.stream().map(Board::getId).toList();
 
-        return listsRepository.findAllByIdIn(ids).stream().map(ListsResponseDto::toDto).toList();
+        return listsRepository.findAllByBoardId(boardId).stream().map(ListsResponseDto::toDto).toList();
     }
 
     @Override

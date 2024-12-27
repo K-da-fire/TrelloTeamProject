@@ -33,6 +33,12 @@ public class Lists extends BaseEntity {
         this.orders = order;
     }
 
+    public Lists(String content, Long orders, Board board) {
+        this.content = content;
+        this.orders = orders;
+        this.board = board;
+    }
+
     public void updateLists(String content, Long orders) {
         this.content = content;
         this.orders = orders;
