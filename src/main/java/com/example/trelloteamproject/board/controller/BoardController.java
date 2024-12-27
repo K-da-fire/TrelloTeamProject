@@ -25,8 +25,9 @@ public class BoardController {
 
     SessionDto session = new SessionDto(1L, Auth.ADMIN);
 
-    @PostMapping("/boards")
+    @PostMapping("/workspace/{workspaceId}/boards")
     public ResponseEntity<CreateBoardResponseDto> save(
+            @PathVariable Long workspaceId,
             @Valid
             @RequestPart CreateBoardRequestDto requestDto,
             @RequestPart(required = false) MultipartFile file,
@@ -37,18 +38,33 @@ public class BoardController {
 
         Long userId = (Long) session.getId();
 
-//        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        CreateBoardResponseDto savedBoard = boardService.save(userId,requestDto.getTitle(),file);
+        CreateBoardResponseDto savedBoard = boardService.save(workspaceId,userId,requestDto.getTitle(),file);
 
         return new ResponseEntity<>(savedBoard, HttpStatus.CREATED);
     }
 
     @GetMapping("/workspaces/{workspaceId}/boards")
-    public ResponseEntity<List<BoardResponseDto>> findBoard(
+    public ResponseEntity<List<BoardResponseDto>> findBoards(
             @PathVariable Long workspaceId,
             @Valid
             HttpServletRequest httpServletRequest){
-        List<BoardResponseDto> allBoards = boardService.findAllBoards();
+        Long userId = (Long) session.getId();
+
+        List<BoardResponseDto> allBoards = boardService.findAllBoards(userId);
+        return new ResponseEntity<>(allBoards,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
+    public ResponseEntity<List<BoardResponseDto>> oneBoard(
+            @PathVariable Long workspaceId,
+            @PathVariable Long boardId,
+
+            @Valid
+            HttpServletRequest httpServletRequest){
+        Long userId = (Long) session.getId();
+
+        List<BoardResponseDto> allBoards = boardService.findOne(workspaceId,boardId,userId);
         return new ResponseEntity<>(allBoards,HttpStatus.OK);
 
     }

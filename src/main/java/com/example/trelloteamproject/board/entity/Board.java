@@ -36,6 +36,12 @@ public class Board extends BaseEntity {
         this.background = background;
     }
 
+    public Board(String title, AttachFile background, Workspace workspace) {
+        this.title = title;
+        this.background = background;
+        this.workspace = workspace;
+    }
+
     public void updateBoard(String title, AttachFile background) {
         this.title = title;
         this.background = background;

@@ -42,15 +42,15 @@ public class BoardServiceImpl implements BoardService {
     private final AttachFileService attachFileService;
 
     @Override
-    public CreateBoardResponseDto save(Long userId, String title, MultipartFile background) {
+    public CreateBoardResponseDto save(Long workspaceId,Long userId, String title, MultipartFile background) {
 
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
 
 
-        Long workspaceId =findWorkspace.getId();
+        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(userId, workspaceId);
+        checkRole(userId, findWorkspaceId);
 
 
 
@@ -59,11 +59,7 @@ public class BoardServiceImpl implements BoardService {
             attachFile = attachFileService.uploadFile(background);
         }
 
-        Board board = new Board(
-                title,
-                attachFile
-
-                );
+        Board board = new Board(title, attachFile, findWorkspace);
 
         if(title==null){
             throw new NotFoundException(NOT_FOUND_MEMBER);
@@ -79,7 +75,18 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardResponseDto> findAllBoards() {
+    public List<BoardResponseDto> findAllBoards(Long userId) {
+
+//        User findUser = userService.findMemberByIdOrElseThrow(userId);
+//
+//        if(findUser.getId().equals())
+        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
+
+    }
+    @Override
+    public List<BoardResponseDto> findOne(Long workspaceId, Long boardId,Long userId) {
+        
+
         return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }

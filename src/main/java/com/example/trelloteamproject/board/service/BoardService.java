@@ -11,11 +11,11 @@ import java.util.List;
 
 @Service
 public interface BoardService {
-    CreateBoardResponseDto save(Long userId, String title, MultipartFile background);
+    CreateBoardResponseDto save(Long workspaceId,Long userId, String title, MultipartFile background);
 
     Board findBoardByIdOrElseThrow(Long id);
-    List<BoardResponseDto> findAllBoards();
-
+    List<BoardResponseDto> findAllBoards(Long userId);
+    List<BoardResponseDto> findOne(Long workspaceId, Long boardId,Long userId);
 
     BoardResponseDto updateBoard(Long userId,Long boardId, String title, MultipartFile background);
 
