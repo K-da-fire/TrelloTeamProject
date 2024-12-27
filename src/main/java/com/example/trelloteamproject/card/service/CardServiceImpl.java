@@ -2,7 +2,6 @@ package com.example.trelloteamproject.card.service;
 
 import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.awss3.service.AttachFileService;
-import com.example.trelloteamproject.board.service.BoardService;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
@@ -13,7 +12,6 @@ import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.service.ListsService;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.service.UserService;
-import com.example.trelloteamproject.workspace.service.WorkspaceService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,15 +26,13 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final UserService userService;
-    private final AttachFileService attachFileService;
     private final ListsService listsService;
-    private final BoardService boardService;
-    private final WorkspaceService workspaceService;
+    private final AttachFileService attachFileService;
 
     @Override
-    public CardResponseDto create(Long id, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
-        User user = userService.findMemberByIdOrElseThrow(id);
-        Lists list = null;
+    public CardResponseDto create(Long userId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
+        User user = userService.findUserByIdOrElseThrow(userId);
+        Lists list = listsService.findListsByIdOrElseThrow(listId);
         AttachFile attachFile = null;
         if(image != null) {
             attachFile = attachFileService.uploadFile(image);
@@ -67,7 +63,9 @@ public class CardServiceImpl implements CardService {
         Card card = checkManager(userId, cardId);
         card.setAttachFile(null);
         cardRepository.save(card);
-        attachFileService.deleteFile(card.getAttachFile().getFileName());
+        if(card.getAttachFile() != null) {
+            attachFileService.deleteFile(card.getAttachFile().getFileName());
+        }
         cardRepository.delete(card);
         return card.getTitle();
     }
@@ -76,7 +74,7 @@ public class CardServiceImpl implements CardService {
     public CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
         Card card = checkManager(userId, cardId);
         AttachFile fileName = card.getAttachFile();
-        if(!file.isEmpty()){
+        if(file != null){
             card.setAttachFile(null);
             cardRepository.save(card);
             attachFileService.deleteFile(fileName.getFileName());
@@ -101,9 +99,7 @@ public class CardServiceImpl implements CardService {
 
     private Card checkManager(Long userId, Long cardId){
         Card card = findByIdOrElseThrow(cardId);
-        if(!card.getUser().getId().equals(userId)){
-            throw new NoAuthorizedException(ErrorCode.NO_AUTHOR_CHANGE);
-        }
+        card.checkAuth(userId);
         return card;
     }
 }
