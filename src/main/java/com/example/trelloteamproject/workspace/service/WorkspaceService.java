@@ -2,6 +2,7 @@ package com.example.trelloteamproject.workspace.service;
 
 
 
+import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import java.util.List;
@@ -18,6 +19,7 @@ public interface WorkspaceService {
     WorkspaceResponseDto updateWorkspace(Long userId,Long workspace_id,String title,String content);
 
     Workspace findWorkspaceByIdOrElseThrow(Long id);
+
 
     void delete(Long userId,Long workspaceId);
 

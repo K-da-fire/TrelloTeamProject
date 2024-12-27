@@ -4,6 +4,7 @@ import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.board.repository.BoardRepository;
+import com.example.trelloteamproject.board.service.BoardService;
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
@@ -13,6 +14,7 @@ import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.repository.ListsRepository;
 import com.example.trelloteamproject.user.service.UserService;
+import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import com.example.trelloteamproject.workspace.service.WorkspaceService;
@@ -31,6 +33,7 @@ public class ListsServiceImpl implements ListsService {
     private final WorkspaceService workspaceService;
     private final ListsRepository listsRepository;
     private final InvitationService invitationService;
+    private final BoardService boardService;
 
     @Override
     public ListsResponseDto save(Long userId,String content, Long orders) {
@@ -58,12 +61,20 @@ public class ListsServiceImpl implements ListsService {
 
     }
 
-//    @Override
-//    public List<BoardResponseDto> findAllBoards() {
-//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
-//
-//    }
 
+
+    @Override
+    public List<ListsResponseDto> findAllLists() {
+        return listsRepository.findAll().stream().map(ListsResponseDto::toDto).toList();
+
+    }
+    @Override
+    public List<ListsResponseDto> findBoardAndLists(Long boardId) {
+        List<Board> findBoards = boardService.findBoardId(boardId);
+        List<Long> ids = findBoards.stream().map(Board::getId).toList();
+
+        return listsRepository.findAllByIdIn(ids).stream().map(ListsResponseDto::toDto).toList();
+    }
 
     @Override
     public ListsResponseDto updateLists(Long userId,Long listsId, String content, Long orders) {

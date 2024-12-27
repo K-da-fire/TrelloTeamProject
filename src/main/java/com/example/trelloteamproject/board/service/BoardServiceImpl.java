@@ -90,6 +90,13 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }
+
+    @Override
+    public List<Board> findBoardId(Long boardId) {
+        return boardRepository.findBoardById(boardId);
+    }
+
+
     @Override
     public BoardResponseDto updateBoard(Long userId, Long boardId, String title, MultipartFile background) {
 

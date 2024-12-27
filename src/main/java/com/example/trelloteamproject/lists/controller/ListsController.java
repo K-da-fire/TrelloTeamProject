@@ -44,15 +44,24 @@ public class ListsController {
         return new ResponseEntity<>(savedLists, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/workspaces/{workspace_id}/boards")
-//    public ResponseEntity<List<BoardResponseDto>> findBoard(
-//            @PathVariable Long workspace_id,
-//            @Valid
-//            HttpServletRequest httpServletRequest){
-//        List<BoardResponseDto> allBoards = boardService.findAllBoards();
-//        return new ResponseEntity<>(allBoards,HttpStatus.OK);
-//
-//    }
+    @GetMapping("/lists")
+    public ResponseEntity<List<ListsResponseDto>> findList(
+            @Valid
+            HttpServletRequest httpServletRequest){
+        List<ListsResponseDto> allLists = listsService.findAllLists();
+        return new ResponseEntity<>(allLists,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{boardId}/listsB")
+    public ResponseEntity<List<ListsResponseDto>> findListB(
+            @PathVariable Long boardId,
+            @Valid
+            HttpServletRequest httpServletRequest){
+        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
+        return new ResponseEntity<>(boardAndLists,HttpStatus.OK);
+
+    }
 
     @PatchMapping("/lists/{listsId}")
     public ResponseEntity<ListsResponseDto> update(

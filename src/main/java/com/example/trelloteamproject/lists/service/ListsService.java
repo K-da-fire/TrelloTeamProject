@@ -6,6 +6,7 @@ import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.entity.Lists;
+import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,11 @@ public interface ListsService {
 
 //    List<BoardResponseDto> findAllBoards();
 
+
+    List<ListsResponseDto> findBoardAndLists(Long boardId);
+
+
+    List<ListsResponseDto>findAllLists();
 
     ListsResponseDto updateLists(Long userId,Long listsId,String content,Long orders);
 
