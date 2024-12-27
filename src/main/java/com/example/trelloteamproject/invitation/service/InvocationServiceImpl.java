@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
 @Service
@@ -27,14 +27,14 @@ public class InvocationServiceImpl implements InvitationService {
 
     @Override
     public Invitation findInvocationByUserAndWorkspaceIdOrElseThrow(Long userId,Long workspaceId) {
-        return invitationRepository.findByUserIdAndWorkspaceId(userId,workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return invitationRepository.findByUserIdAndWorkspaceId(userId,workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
     }
 
     @Override
     public InvitationResponseDto save(String email, Long workspaceId, Role role) {
         User finduser = userRepository.findByEmail(email);
 
-        Workspace findWorkspaceId = workspaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        Workspace findWorkspaceId = workspaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
 
         Invitation invitation = new Invitation(finduser,findWorkspaceId,role);

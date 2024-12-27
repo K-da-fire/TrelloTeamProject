@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
 @Service
@@ -56,7 +56,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists findListsByIdOrElseThrow(Long id) {
-        return listsRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return listsRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
     }
 

@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
 @Service
@@ -38,7 +38,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public CreateWorkspaceResponseDto save(Long userId, String title, String content) {
 
-        User finduser = userService.findMemberByIdOrElseThrow(userId);
+        User finduser = userService.findUserByIdOrElseThrow(userId);
 
         if(!finduser.getAuth().equals(Auth.ADMIN)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
@@ -94,7 +94,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Workspace findWorkspaceByIdOrElseThrow(Long id) {
-        return workSpaceRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return workSpaceRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
     }
 

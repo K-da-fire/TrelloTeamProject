@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
+import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
 @Service
@@ -63,7 +63,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = new Board(title, attachFile, findWorkspace);
 
         if(title==null){
-            throw new NotFoundException(NOT_FOUND_MEMBER);
+            throw new NotFoundException(NOT_FOUND_USER);
         }
         Board findboard = boardRepository.save(board);
         return CreateBoardResponseDto.toDto(findboard);
@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Board findBoardByIdOrElseThrow(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return boardRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
     }
 
@@ -118,7 +118,7 @@ public class BoardServiceImpl implements BoardService {
 
         checkRole(userId, workspaceId);
 
-        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));;
+        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));;
 
         AttachFile fileName = findBoard.getBackground();
         if(!background.isEmpty()){
@@ -131,7 +131,7 @@ public class BoardServiceImpl implements BoardService {
         findBoard.updateBoard(title,fileName);
 
         if(title==null){
-            throw new NotFoundException(NOT_FOUND_MEMBER);
+            throw new NotFoundException(NOT_FOUND_USER);
         }
         Board savedBoard = boardRepository.save(findBoard);
 
