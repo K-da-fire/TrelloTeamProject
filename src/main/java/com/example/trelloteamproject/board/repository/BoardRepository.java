@@ -11,7 +11,6 @@ import java.util.List;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    // TODO 2 : 해당 보드의 리스트(Lists)를 리스트(java.util.List)로 가져옵니다.
 
     List<Board> findBoardById(Long boardId);
 
@@ -20,10 +19,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findAllByWorkspaceId(Long workspaceId);
 
 
-    @Query(value = "SELECT b " +
-            "FROM Board b " +
-            "LEFT JOIN FETCH b.lists l " +
-            "LEFT JOIN FETCH l.cards c " +
-            "WHERE b.id = :boardId")
-    List<Board> findBoardByListsAndCard(Long boardId);
+    @Query("SELECT b FROM Board b " +
+            "JOIN FETCH b.lists bl " +
+            "WHERE b.id = :boardId AND EXISTS (" +
+            "SELECT l FROM Lists l " +
+            "WHERE l.board.id = b.id)")
+    Board findBoardByListsAndCard(Long boardId);
 }

@@ -69,17 +69,17 @@ public class BoardController {
 
     }
 
-//    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
-//    public ResponseEntity<List<ShowResponseDto>> oneBoard(
-//            @PathVariable Long workspaceId,
-//            @PathVariable Long boardId,
-//            HttpServletRequest httpServletRequest){
-//        Long userId = (Long) session.getId();
-//
-//        List<ShowResponseDto> allBoards = boardService.findOne(workspaceId,boardId);
-//        return new ResponseEntity<>(allBoards,HttpStatus.OK);
-//
-//    }
+    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
+    public ResponseEntity<ShowResponseDto> oneBoard(
+            @PathVariable Long workspaceId,
+            @PathVariable Long boardId,
+            HttpServletRequest httpServletRequest){
+        Long userId = (Long) session.getId();
+
+        ShowResponseDto allBoards = boardService.findOne(workspaceId,boardId);
+        return new ResponseEntity<>(allBoards,HttpStatus.OK);
+
+    }
 
     @PatchMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> update(

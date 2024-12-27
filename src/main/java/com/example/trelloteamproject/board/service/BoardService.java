@@ -18,7 +18,7 @@ public interface BoardService {
 
     Board findBoardByIdOrElseThrow(Long id);
     List<BoardResponseDto> findAllBoards(Long userId);
-    List<BoardResponseDto> findOne(Long workspaceId, Long boardId);
+    ShowResponseDto findOne(Long workspaceId, Long boardId);
     List<BoardResponseDto> findWorkspaceAndBoards(Long boardId,Long workspaceId);
     List<Board> findBoardId(Long boardId);
     BoardResponseDto updateBoard(Long userId,Long boardId, String title, MultipartFile background);

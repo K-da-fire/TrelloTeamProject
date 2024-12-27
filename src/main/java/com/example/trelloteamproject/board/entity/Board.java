@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,7 +42,7 @@ public class Board extends BaseEntity {
 //    @JsonIgnoreProperties({"board"})
     @BatchSize(size = 3)
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Lists> lists;
+    private List<Lists> lists= new ArrayList<>();;
 
 //    @JsonIgnoreProperties({"board"})
 //    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

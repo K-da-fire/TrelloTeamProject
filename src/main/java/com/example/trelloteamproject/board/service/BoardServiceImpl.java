@@ -33,8 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
-import static com.example.trelloteamproject.board.entity.QBoard.board;
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_MEMBER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
@@ -97,20 +95,13 @@ public class BoardServiceImpl implements BoardService {
 
     }
     @Override
-    public List<BoardResponseDto> findOne(Long workspaceId, Long boardId) {
+    public ShowResponseDto findOne(Long workspaceId, Long boardId) {
 
-        // TODO 3 : 두 dto를 연결
-        // 하나는 지금 List<Card>
-        // 하나는 지금 List<Lists>
-        // -> List<Lists> + List<Card> -> Lists.Id
-        // 저 두 dto 를 연결해줘야해요
 
-        Board findBoard = findBoardByIdOrElseThrow(boardId);
+        Board findBoard = boardRepository.findBoardByListsAndCard(boardId);
 
-        return boardRepository.findBoardByListsAndCard(findBoard.getId()).stream().map(BoardResponseDto::toDto).toList();
+        return new ShowResponseDto(boardRepository.findBoardByListsAndCard(boardId));
 
-//        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
-//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }
 

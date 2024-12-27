@@ -12,23 +12,13 @@ import java.util.List;
 @Getter
 public class ShowResponseDto {
     private Long id;    // 보드 아이디
-    private List<Lists> lists;  // 보드 안엥 있는 리스트
-    private List<ListsCardResponseDto> cards;
+    private List<ListsCardResponseDto> lists;  // 보드 안엥 있는 리스트
 
-    public ShowResponseDto(Long id, List<Lists> lists, List<ListsCardResponseDto> card) {
-        this.id = id;
-        this.lists = lists;
-        this.cards = card;
+
+    public ShowResponseDto(Board boardByListsAndCard) {
+        this.id=boardByListsAndCard.getId();
+        this.lists=boardByListsAndCard.getLists().stream().map(ListsCardResponseDto::toDto).toList();
     }
 
-    public static ShowResponseDto toDto(Board board) {
-        return new ShowResponseDto(
-                board.getId(),
-                board.getLists(),
-                board.getLists().stream().map(list -> {
-                    return new ListsCardResponseDto(list.getCards());
-                }).toList()
-        );
-    }
 
 }
