@@ -16,21 +16,23 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/cards")
+@RequestMapping
 @RequiredArgsConstructor
 public class CardController {
 
     private final CardService cardService;
     private SessionDto session = new SessionDto(1L, Auth.ADMIN);
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/lists/{listId}/cards", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> create(
 //            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
+            @PathVariable Long listId,
             @RequestPart(required = false) MultipartFile file,
             @Valid @RequestPart CardRequestDto cardRequestDto
     ) {
         return ResponseEntity.ok().body(cardService.create(
                 session.getId(),
+                listId,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
 //                cardRequestDto.getImage(),
@@ -39,12 +41,12 @@ public class CardController {
         ));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/cards/{id}")
     public ResponseEntity<CardResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(cardService.findById(id));
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/cards/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> update(
 //            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
             @PathVariable Long id,

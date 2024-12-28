@@ -1,12 +1,13 @@
 package com.example.trelloteamproject.lists.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class ListsRequestDto {
-    @NotBlank(message = "제목은 필수값 입니다.")
+    @NotBlank(message = "설명은 필수값 입니다.")
     private String content;
-    @NotBlank(message = "순서는 필수값 입니다.")
+    @NotNull(message = "순서는 필수값 입니다.")
     private Long orders;
 }

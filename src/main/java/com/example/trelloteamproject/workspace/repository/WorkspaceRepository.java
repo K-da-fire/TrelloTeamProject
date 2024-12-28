@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
 
-//    List<WorkspaceResponseDto> findAllByUserId(Long id);
+    List<Workspace> findAllByIdIn(List<Long> id);
+    Workspace findWorkspaceById(Long id);
 }

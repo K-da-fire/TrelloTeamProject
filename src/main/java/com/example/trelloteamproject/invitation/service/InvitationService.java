@@ -7,10 +7,13 @@ import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import org.aopalliance.intercept.Invocation;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public interface InvitationService {
     Invitation findInvocationByUserAndWorkspaceIdOrElseThrow(Long userId, Long workspaceId);
     InvitationResponseDto save(String email, Long workspaceId,Role role);
+
+    List<Invitation> findByUserIdOrElseThrow(Long userId);
 }
