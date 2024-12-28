@@ -45,7 +45,7 @@ public class Config {
 
         //인가 설정
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("users","users/login").permitAll() //인증 없이 허용
+                        .requestMatchers("users","users/login","users/delete").permitAll() //인증 없이 허용
                         .requestMatchers("/admin").hasRole("ADMIN")             // ADMIN 권한 필요
                         .anyRequest().authenticated());                          // 나머지 인증 필요
 

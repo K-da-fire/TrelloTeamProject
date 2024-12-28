@@ -1,10 +1,7 @@
 package com.example.trelloteamproject.login.jwt;
 
 import com.example.trelloteamproject.common.Auth;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,8 +31,15 @@ public class JwtTokenProvider {
     }
 
     // 토큰이 만료되었는지 확인
+
     public boolean isExpired(String token) {
-        return getClaims(token).getExpiration().before(new Date());
+        try {
+            return getClaims(token).getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (Exception e) {
+            throw new MalformedJwtException("잘못된 JWT 토큰입니다", e);
+        }
     }
 
     // JWT 토큰 생성

@@ -58,7 +58,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         // JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(user.getEmail(), user.getAuth(), 60*60*10L);
+        String token = jwtTokenProvider.createToken(user.getEmail(), user.getAuth(), 60*60*60000L);
         System.out.println("Generated token: " + token);  // 로그 찍기
 
         // 로그인 성공 시 응답 DTO 생성 (token 포함)
