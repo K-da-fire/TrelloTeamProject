@@ -9,16 +9,21 @@ import com.example.trelloteamproject.exception.ErrorCode;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.service.ListsService;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.message.TokenParser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.ion.Timestamp;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -30,11 +35,13 @@ public class CardServiceImpl implements CardService {
     private final UserService userService;
     private final ListsService listsService;
     private final AttachFileService attachFileService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     @Override
-    public CardResponseDto create(Long userId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
-        User user = userService.findUserByIdOrElseThrow(userId);
+    public CardResponseDto create(String token, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
+        String email = jwtTokenProvider.getUsername(token);
+        User user = userService.findUserByEmailOrElseThrow(email);
         Lists list = listsService.findListsByIdOrElseThrow(listId);
         AttachFile attachFile = null;
         if(image != null) {
@@ -62,8 +69,9 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public String delete(Long userId, Long cardId) {
-        Card card = checkManager(userId, cardId);
+    public String delete(String token, Long cardId) {
+        String email = jwtTokenProvider.getUsername(token);
+        Card card = checkManager(email, cardId);
         card.setAttachFile(null);
         cardRepository.save(card);
         if(card.getAttachFile() != null) {
@@ -75,8 +83,9 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
-        Card card = checkManager(userId, cardId);
+    public CardResponseDto update(String token, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
+        String email = jwtTokenProvider.getUsername(token);
+        Card card = checkManager(email, cardId);
         AttachFile fileName = card.getAttachFile();
         if(file != null){
             card.setAttachFile(null);
@@ -103,13 +112,18 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<CardResponseDto> searchCardsByTitle(String title, Pageable pageable) {
+        Date startTime = new Date();
+        log.info(String.valueOf(Timestamp.now()));
         List<Card> cards = cardRepository.findByTitleContains(title, pageable);
+        Date endTime = new Date();
+        log.info(String.valueOf(Timestamp.now()));
+        log.info(String.valueOf((endTime.getTime() - startTime.getTime())/1000));
         return cards.stream().map(Card::toDto).toList();
     }
 
-    private Card checkManager(Long userId, Long cardId){
+    private Card checkManager(String email, Long cardId){
         Card card = findByIdOrElseThrow(cardId);
-        card.checkAuth(userId);
+        card.checkAuth(email);
         return card;
     }
 }

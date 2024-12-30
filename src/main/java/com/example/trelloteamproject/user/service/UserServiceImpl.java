@@ -4,6 +4,7 @@ import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.exception.DuplicatedException;
 import com.example.trelloteamproject.exception.InvalidInputException;
 import com.example.trelloteamproject.exception.NotFoundException;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.user.dto.UserResponseDto;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
@@ -18,7 +19,6 @@ import static com.example.trelloteamproject.exception.ErrorCode.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto signUp(String email, String password, String name, Auth auth) {
@@ -35,18 +35,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId, String password) {
-        User user = findUserByIdOrElseThrow(userId);
-        if(!passwordEncoder.matches(password, user.getPassword())) {
-            throw new InvalidInputException(WRONG_PASSWORD);
+    public User findUserByIdOrElseThrow(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+        if(user.getDeletedAt() != null){
+            throw new NotFoundException(DELETED_USER);
         }
-        user.delete();
-        userRepository.save(user);
+        return user;
     }
 
     @Override
-    public User findUserByIdOrElseThrow(Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+    public User findUserByEmailOrElseThrow(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
         if(user.getDeletedAt() != null){
             throw new NotFoundException(DELETED_USER);
         }

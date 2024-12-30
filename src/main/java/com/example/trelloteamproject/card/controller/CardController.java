@@ -23,17 +23,17 @@ import java.time.LocalDateTime;
 public class CardController {
 
     private final CardService cardService;
-    private SessionDto session = new SessionDto(1L, Auth.ADMIN);
 
     @PostMapping(value = "/lists/{listId}/cards", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> create(
-//            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long listId,
             @RequestPart(required = false) MultipartFile file,
             @Valid @RequestPart CardRequestDto cardRequestDto
     ) {
+        String token = authorizationHeader.replace("Bearer ", "").trim();
         return ResponseEntity.ok().body(cardService.create(
-                session.getId(),
+                token,
                 listId,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
@@ -50,13 +50,14 @@ public class CardController {
 
     @PatchMapping(value = "/cards/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> update(
-//            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long id,
             @RequestPart(required = false) MultipartFile file,
             @Valid @RequestPart CardRequestDto cardRequestDto
     ){
+        String token = authorizationHeader.replace("Bearer ", "").trim();
         return ResponseEntity.ok().body(cardService.update(
-                session.getId(),
+                token,
                 id,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
@@ -67,10 +68,11 @@ public class CardController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(
-//            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long id
     ) {
-        String title = cardService.delete(session.getId(), id);
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String title = cardService.delete(token, id);
         return ResponseEntity.ok().body(title + "카드가 삭제 되었습니다.");
     }
 
