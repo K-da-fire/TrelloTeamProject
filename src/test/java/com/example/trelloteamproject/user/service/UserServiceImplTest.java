@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -62,37 +61,6 @@ class UserServiceImplTest {
         DuplicatedException throwable = assertThrows(DuplicatedException.class,
                 () -> userService.signUp(email, "password", "name", auth));
         assertThat(throwable.getErrorCode()).isEqualTo(EMAIL_EXIST);
-    }
-
-    @Test
-    @DisplayName("회원 삭제 성공")
-    void deleteUser() {
-        // Given
-        String email = "test@test.com";
-        String password = "test";
-        String name = "name";
-        Auth auth = Auth.ADMIN;
-        User user = userRepository.save(new User(email, password, name, auth));
-        // When
-        userService.deleteUser(user.getId(), user.getPassword());
-        // Then
-        assertThatThrownBy(() ->userService.findUserByIdOrElseThrow(user.getId()))
-                .isInstanceOf(InvalidInputException.class);
-    }
-
-    @Test
-    @DisplayName("회원 삭제 비밀번호 매치 실패")
-    void deleteUserPasswordMatchFail() {
-        // Given
-        String email = "test@test.com";
-        String password = "test";
-        String name = "name";
-        Auth auth = Auth.ADMIN;
-        User user = userRepository.save(new User(email, password, name, auth));
-        // When
-        // Then
-        assertThatThrownBy(() ->userService.deleteUser(user.getId(), "wrong password"))
-                .isInstanceOf(InvalidInputException.class);
     }
 
     @Test

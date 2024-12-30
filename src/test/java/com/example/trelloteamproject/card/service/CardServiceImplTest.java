@@ -53,7 +53,7 @@ class CardServiceImplTest {
         MultipartFile image = null;
         LocalDateTime deadline = LocalDateTime.now();
         // When
-        CardResponseDto card = cardService.create(user.getId(), lists.getId(), title, explanation, image, deadline);
+        CardResponseDto card = cardService.create(user.getEmail(), lists.getId(), title, explanation, image, deadline);
         // Then
         assertNotNull(card);
     }
@@ -68,7 +68,7 @@ class CardServiceImplTest {
         User user = userRepository.findById(1L).get();
         Card card = cardRepository.findById(1L).get();
         // When
-        cardService.delete(user.getId(), card.getId());
+        cardService.delete(user.getEmail(), card.getId());
         // Then
         assertThatThrownBy(() ->cardService.findByIdOrElseThrow(card.getId()))
                 .isInstanceOf(NotFoundException.class);
@@ -85,7 +85,7 @@ class CardServiceImplTest {
         MultipartFile image = null;
         LocalDateTime deadline = LocalDateTime.now();
         // When
-        CardResponseDto cardResponseDto = cardService.update(user.getId(), card.getId(), title, explanation, image, deadline);
+        CardResponseDto cardResponseDto = cardService.update(user.getEmail(), card.getId(), title, explanation, image, deadline);
         // Then
         assertNotNull(cardResponseDto);
     }

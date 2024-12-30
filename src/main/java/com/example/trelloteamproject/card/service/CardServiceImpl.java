@@ -35,12 +35,10 @@ public class CardServiceImpl implements CardService {
     private final UserService userService;
     private final ListsService listsService;
     private final AttachFileService attachFileService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     @Override
-    public CardResponseDto create(String token, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
-        String email = jwtTokenProvider.getUsername(token);
+    public CardResponseDto create(String email, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
         User user = userService.findUserByEmailOrElseThrow(email);
         Lists list = listsService.findListsByIdOrElseThrow(listId);
         AttachFile attachFile = null;
@@ -69,8 +67,7 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public String delete(String token, Long cardId) {
-        String email = jwtTokenProvider.getUsername(token);
+    public String delete(String email, Long cardId) {
         Card card = checkManager(email, cardId);
         card.setAttachFile(null);
         cardRepository.save(card);
@@ -83,8 +80,7 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public CardResponseDto update(String token, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
-        String email = jwtTokenProvider.getUsername(token);
+    public CardResponseDto update(String email, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
         Card card = checkManager(email, cardId);
         AttachFile fileName = card.getAttachFile();
         if(file != null){
