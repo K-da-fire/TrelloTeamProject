@@ -34,13 +34,13 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
-    public CreateBoardResponseDto save(Long workspaceId,Long userId, String title, MultipartFile background) {
+    public CreateBoardResponseDto save(String email,Long workspaceId, String title, MultipartFile background) {
 
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
-        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(userId, findWorkspaceId);
+
+        checkRole(email, workspaceId);
 
         AttachFile attachFile = null;
         if(background != null) {
@@ -63,7 +63,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardResponseDto> findAllBoards(Long userId) {
+    public List<BoardResponseDto> findAllBoards(String email) {
 
 
         return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
@@ -71,10 +71,11 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<BoardResponseDto> findWorkspaceAndBoards(Long userId,Long workspaceId) {
+    public List<BoardResponseDto> findWorkspaceAndBoards(String email,Long workspaceId) {
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
-
-        return boardRepository.findAllByWorkspaceId(workspaceId).stream().map(BoardResponseDto::toDto).toList();
+        Long findWorkspaceId =findWorkspace.getId();
+        return boardRepository.findAllByWorkspaceId(findWorkspaceId).stream().map(BoardResponseDto::toDto).toList();
 
     }
     @Override
@@ -93,13 +94,11 @@ public class BoardServiceImpl implements BoardService {
 
 
     @Override
-    public BoardResponseDto updateBoard(Long userId, Long boardId, String title, MultipartFile background) {
+    public BoardResponseDto updateBoard(String email, Long workspaceId, Long boardId, String title, MultipartFile background) {
 
 
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
-        Long workspaceId =findWorkspace.getId();
 
-        checkRole(userId, workspaceId);
+        checkRole(email, workspaceId);
 
         Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_BOARD));;
 
@@ -124,12 +123,11 @@ public class BoardServiceImpl implements BoardService {
     }
     @Transactional
     @Override
-    public void delete(Long userId, Long boardId) {
+    public void delete(String email, Long workspaceId,Long boardId) {
 
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
-        Long workspaceId =findWorkspace.getId();
 
-        checkRole(userId, workspaceId);
+
+        checkRole(email, workspaceId);
 
         Board findBoard = findBoardByIdOrElseThrow(boardId);
 
@@ -142,8 +140,8 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.delete(findBoard);
     }
 
-    private void checkRole(Long userId, Long workspaceId){
-        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
+    private void checkRole(String email, Long workspaceId){
+        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(email, workspaceId);
 
         if(findInvitation.getRole().equals(Role.READ_ONLY)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);

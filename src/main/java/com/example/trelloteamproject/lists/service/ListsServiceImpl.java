@@ -32,16 +32,15 @@ public class ListsServiceImpl implements ListsService {
     private final BoardService boardService;
 
     @Override
-    public ListsResponseDto save(Long userId,Long boardId,String content, Long orders) {
+    public ListsResponseDto save(String email,Long workspaceId,Long boardId,String content, Long orders) {
 
         Board findBoard = boardRepository.findById(boardId).get();
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
+
+        Long findWorkspaceId =findWorkspace.getId();
 
 
-
-        Long workspaceId =findWorkspace.getId();
-
-        checkRole(userId, workspaceId);
+        checkRole(email, findWorkspaceId);
 
         Lists lists = new Lists(
                 content,
@@ -66,7 +65,7 @@ public class ListsServiceImpl implements ListsService {
         return listsRepository.findAllByOrderByOrdersAsc().stream().map(ListsResponseDto::toDto).toList();
     }
     @Override
-    public List<ListsResponseDto> findBoardAndLists(Long boardId) {
+    public List<ListsResponseDto> findBoardAndLists(Long workspaceId,Long boardId) {
 
         return listsRepository.findAllByBoardId(boardId).stream().map(ListsResponseDto::toDto).toList();
     }
@@ -84,15 +83,15 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    public ListsResponseDto updateLists(Long userId,Long listsId, String content, Long orders) {
+    public ListsResponseDto updateLists(String email,Long workspaceId,Long boardId,Long listsId, String content, Long orders) {
 
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
 
 
-        Long workspaceId =findWorkspace.getId();
+        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(userId, workspaceId);
+        checkRole(email, findWorkspaceId);
 
         Lists findLists = findListsByIdOrElseThrow(listsId);
 
@@ -107,20 +106,20 @@ public class ListsServiceImpl implements ListsService {
 
     @Transactional
     @Override
-    public void delete(Long userId,Long listsId) {
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);
+    public void delete(String email,Long workspaceId,Long boardId,Long listsId) {
+        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
 
 
-        Long workspaceId =findWorkspace.getId();
+        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(userId, workspaceId);
+        checkRole(email, findWorkspaceId);
         Lists findLists = findListsByIdOrElseThrow(listsId);
         listsRepository.delete(findLists);
     }
 
-    private void checkRole(Long userId, Long workspaceId){
-        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
+    private void checkRole(String email, Long workspaceId){
+        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(email, workspaceId);
 
         if(findInvitation.getRole().equals(Role.READ_ONLY)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
