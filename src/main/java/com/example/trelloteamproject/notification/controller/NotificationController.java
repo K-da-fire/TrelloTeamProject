@@ -11,7 +11,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @PostMapping("/notifications")
+    @PostMapping
     public void notifySlack(@RequestBody String message) {
         notificationService.sendMessageToSlack(message);
     }
