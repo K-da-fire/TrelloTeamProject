@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
                 name,
                 auth
         ));
-        return UserResponseDto.toDto(user);
+        return UserResponseDto.toDto(user, null);
     }
 
     @Override
