@@ -14,7 +14,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Value("${slack.bot-token}")
     private String slackBotToken;
 
-    @Value("${slack.channel.monitor}")
+    @Value("${slack.channel.monitor.id}")
     private String defaultChannel;
 
     /**
