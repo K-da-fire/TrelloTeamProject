@@ -42,8 +42,6 @@ public class LoginServiceImpl implements LoginService {
         // 로그인 성공 시 응답 DTO 생성 (token 포함)
         return UserResponseDto.toDto(user, token);
     }
-
-
     // JWT 토큰을 이용한 회원 탈퇴 처리
     @Override
     public void deleteAccount(String token, String password) {

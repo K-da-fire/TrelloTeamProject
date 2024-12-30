@@ -29,7 +29,7 @@ public class ListsController {
     private final ListsService listsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/workspace/{workspaceId}/{boardId}/lists")
+    @PostMapping("/workspaces/{workspaceId}/board/{boardId}/lists")
     public ResponseEntity<ListsResponseDto> save(
             @PathVariable Long workspaceId,
             @PathVariable Long boardId,
@@ -52,7 +52,7 @@ public class ListsController {
 
     }
 
-    @GetMapping("/workspace/{workspaceId}/{boardId}/lists")
+    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}/lists")
     public ResponseEntity<List<ListsResponseDto>> findListPath(
             @PathVariable Long workspaceId,
             @PathVariable Long boardId){
@@ -62,7 +62,7 @@ public class ListsController {
     }
 
 
-    @PatchMapping("/workspace/{workspaceId}/{boardId}/lists/{listsId}")
+    @PatchMapping("/workspaces/{workspaceId}/boards/{boardId}/lists/{listsId}")
     public ResponseEntity<ListsResponseDto> update(
             @PathVariable Long workspaceId,
             @PathVariable Long boardId,
@@ -80,7 +80,7 @@ public class ListsController {
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
     }
 
-    @DeleteMapping("/workspace/{workspaceId}/{boardId}/lists/{listsId}")
+    @DeleteMapping("/workspaces/{workspaceId}/boards/{boardId}/lists/{listsId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long workspaceId,
             @PathVariable Long boardId,
