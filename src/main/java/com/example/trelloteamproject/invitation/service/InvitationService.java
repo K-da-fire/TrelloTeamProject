@@ -12,8 +12,8 @@ import java.util.Optional;
 
 @Service
 public interface InvitationService {
-    Invitation findInvocationByUserAndWorkspaceIdOrElseThrow(Long userId, Long workspaceId);
+    Invitation findInvocationByUserAndWorkspaceIdOrElseThrow(String email, Long workspaceId);
     InvitationResponseDto save(String email, Long workspaceId,Role role);
 
-    List<Invitation> findByUserIdOrElseThrow(Long userId);
+    List<Invitation> findByUserIdOrElseThrow(String email);
 }

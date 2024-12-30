@@ -8,6 +8,7 @@ import com.example.trelloteamproject.board.service.BoardService;
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.login.entity.SessionDto;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,23 +25,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    SessionDto session = new SessionDto(1L, Auth.ADMIN);
 
-    @PostMapping("/workspace/{workspaceId}/boards")
+    @PostMapping("/workspaces/{workspaceId}/boards")
     public ResponseEntity<CreateBoardResponseDto> save(
+
             @PathVariable Long workspaceId,
             @Valid
             @RequestPart CreateBoardRequestDto requestDto,
             @RequestPart(required = false) MultipartFile file,
-            HttpServletRequest httpServlet){
-//        HttpSession session = httpServlet.getSession(false);
+            @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
 
-//        Long userId = (Long) session.getAttribute("userId");
 
-        Long userId = (Long) session.getId();
-
-        CreateBoardResponseDto savedBoard = boardService.save(workspaceId,userId,requestDto.getTitle(),file);
+        CreateBoardResponseDto savedBoard = boardService.save(email,workspaceId,requestDto.getTitle(),file);
 
 
         return new ResponseEntity<>(savedBoard, HttpStatus.CREATED);
@@ -49,10 +49,11 @@ public class BoardController {
     @GetMapping("/workspaces/boards")
     public ResponseEntity<List<BoardResponseDto>> findBoards(
             @Valid
-            HttpServletRequest httpServletRequest){
-        Long userId = (Long) session.getId();
+            @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
 
-        List<BoardResponseDto> allBoards = boardService.findAllBoards(userId);
+        List<BoardResponseDto> allBoards = boardService.findAllBoards(email);
         return new ResponseEntity<>(allBoards,HttpStatus.OK);
 
     }
@@ -61,10 +62,11 @@ public class BoardController {
     public ResponseEntity<List<BoardResponseDto>> findWorkspaceAndBoards(
             @PathVariable Long workspaceId,
             @Valid
-            HttpServletRequest httpServletRequest){
-        Long userId = (Long) session.getId();
+            @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
 
-        List<BoardResponseDto> findBoards = boardService.findWorkspaceAndBoards(userId, workspaceId);
+        List<BoardResponseDto> findBoards = boardService.findWorkspaceAndBoards(email, workspaceId);
         return new ResponseEntity<>(findBoards,HttpStatus.OK);
 
     }
@@ -72,36 +74,38 @@ public class BoardController {
     @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
     public ResponseEntity<ShowResponseDto> oneBoard(
             @PathVariable Long workspaceId,
-            @PathVariable Long boardId,
-            HttpServletRequest httpServletRequest){
-        Long userId = (Long) session.getId();
+            @PathVariable Long boardId){
 
         ShowResponseDto allBoards = boardService.findOne(workspaceId,boardId);
         return new ResponseEntity<>(allBoards,HttpStatus.OK);
 
     }
 
-    @PatchMapping("/boards/{boardId}")
+    @PatchMapping("/workspaces/{workspaceId}/boards/{boardId}")
     public ResponseEntity<BoardResponseDto> update(
+            @PathVariable Long workspaceId,
             @PathVariable Long boardId,
             @Valid
             @RequestPart CreateBoardRequestDto requestDto,
             @RequestPart(required = false) MultipartFile file,
-            HttpServletRequest request){
-        Long userId = (Long) session.getId();
-        BoardResponseDto updateBoard = boardService.updateBoard(userId,boardId, requestDto.getTitle(), file);
+            @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
+        BoardResponseDto updateBoard = boardService.updateBoard(email,workspaceId,boardId, requestDto.getTitle(), file);
 
         return new ResponseEntity<>(updateBoard, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{boardId}")
+    @DeleteMapping("/workspaces/{workspaceId}/boards/{boardId}")
     public ResponseEntity<Void> update(
+            @PathVariable Long workspaceId,
             @PathVariable Long boardId,
             @Valid
-            HttpServletRequest request){
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = (Long) session.getId();
-        boardService.delete(userId,boardId);
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
+        boardService.delete(email,workspaceId,boardId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

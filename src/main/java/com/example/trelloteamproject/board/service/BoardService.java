@@ -14,14 +14,14 @@ import java.util.List;
 
 @Service
 public interface BoardService {
-    CreateBoardResponseDto save(Long workspaceId,Long userId, String title, MultipartFile background);
+    CreateBoardResponseDto save(String email,Long workspaceId, String title, MultipartFile background);
 
     Board findBoardByIdOrElseThrow(Long id);
-    List<BoardResponseDto> findAllBoards(Long userId);
+    List<BoardResponseDto> findAllBoards(String email);
     ShowResponseDto findOne(Long workspaceId, Long boardId);
-    List<BoardResponseDto> findWorkspaceAndBoards(Long boardId,Long workspaceId);
+    List<BoardResponseDto> findWorkspaceAndBoards(String email,Long workspaceId);
     List<Board> findBoardId(Long boardId);
-    BoardResponseDto updateBoard(Long userId,Long boardId, String title, MultipartFile background);
+    BoardResponseDto updateBoard(String email,Long workspaceId,Long boardId, String title, MultipartFile background);
 
-    void delete(Long userId, Long boardId);
+    void delete(String email,Long workspaceId, Long boardId);
 }
