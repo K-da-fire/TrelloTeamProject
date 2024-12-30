@@ -38,9 +38,9 @@ public class BoardServiceImpl implements BoardService {
 
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
 
-        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(email, findWorkspaceId);
+
+        checkRole(email, workspaceId);
 
         AttachFile attachFile = null;
         if(background != null) {
@@ -97,10 +97,8 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto updateBoard(String email, Long workspaceId, Long boardId, String title, MultipartFile background) {
 
 
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
-        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(email, findWorkspaceId);
+        checkRole(email, workspaceId);
 
         Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_BOARD));;
 
@@ -127,10 +125,9 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void delete(String email, Long workspaceId,Long boardId) {
 
-        Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(workspaceId);
-        Long findWorkspaceId =findWorkspace.getId();
 
-        checkRole(email, findWorkspaceId);
+
+        checkRole(email, workspaceId);
 
         Board findBoard = findBoardByIdOrElseThrow(boardId);
 
