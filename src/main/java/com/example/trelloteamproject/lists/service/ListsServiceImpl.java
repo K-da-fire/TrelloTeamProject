@@ -11,16 +11,15 @@ import com.example.trelloteamproject.invitation.service.InvitationService;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.repository.ListsRepository;
-import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
 import com.example.trelloteamproject.workspace.service.WorkspaceService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
-import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
+import static com.example.trelloteamproject.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +55,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists findListsByIdOrElseThrow(Long id) {
-        return listsRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+        return listsRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_LISTS));
 
     }
 
@@ -69,8 +68,6 @@ public class ListsServiceImpl implements ListsService {
     }
     @Override
     public List<ListsResponseDto> findBoardAndLists(Long boardId) {
-//        List<Board> findBoards = boardService.findBoardId(boardId);
-//        List<Long> ids = findBoards.stream().map(Board::getId).toList();
 
         return listsRepository.findAllByBoardId(boardId).stream().map(ListsResponseDto::toDto).toList();
     }
@@ -84,9 +81,6 @@ public class ListsServiceImpl implements ListsService {
 
         return listsRepository.findListsByCardsId(findLists.getId()).stream().map(ListsResponseDto::toDto).toList();
 
-//
-//        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
-//        return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }
 
@@ -112,6 +106,7 @@ public class ListsServiceImpl implements ListsService {
 
     }
 
+    @Transactional
     @Override
     public void delete(Long userId,Long listsId) {
         Workspace findWorkspace = workspaceService.findWorkspaceByIdOrElseThrow(userId);

@@ -6,35 +6,22 @@ import com.example.trelloteamproject.board.dto.BoardResponseDto;
 import com.example.trelloteamproject.board.dto.CreateBoardResponseDto;
 import com.example.trelloteamproject.board.entity.Board;
 import com.example.trelloteamproject.board.repository.BoardRepository;
-import com.example.trelloteamproject.card.entity.Card;
-import com.example.trelloteamproject.card.service.CardService;
-import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.entity.Invitation;
-import com.example.trelloteamproject.invitation.repository.InvitationRepository;
 import com.example.trelloteamproject.invitation.service.InvitationService;
-import com.example.trelloteamproject.lists.dto.ListsResponseDto;
-import com.example.trelloteamproject.lists.entity.Lists;
-import com.example.trelloteamproject.lists.repository.ListsRepository;
-import com.example.trelloteamproject.lists.service.ListsService;
 import com.example.trelloteamproject.show.dto.ShowResponseDto;
-import com.example.trelloteamproject.user.entity.User;
-import com.example.trelloteamproject.user.repository.UserRepository;
-import com.example.trelloteamproject.user.service.UserService;
-import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
-import com.example.trelloteamproject.workspace.dto.WorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.entity.Workspace;
-import com.example.trelloteamproject.workspace.repository.WorkspaceRepository;
 import com.example.trelloteamproject.workspace.service.WorkspaceService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
-import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
+
+import static com.example.trelloteamproject.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +50,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = new Board(title, attachFile, findWorkspace);
 
         if(title==null){
-            throw new NotFoundException(NOT_FOUND_USER);
+            throw new NotFoundException(NO_TITLE);
         }
         Board findboard = boardRepository.save(board);
         return CreateBoardResponseDto.toDto(findboard);
@@ -71,16 +58,14 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Board findBoardByIdOrElseThrow(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+        return boardRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_BOARD));
 
     }
 
     @Override
     public List<BoardResponseDto> findAllBoards(Long userId) {
 
-//        User findUser = userService.findMemberByIdOrElseThrow(userId);
-//
-//        if(findUser.getId().equals())
+
         return boardRepository.findAll().stream().map(BoardResponseDto::toDto).toList();
 
     }
@@ -88,9 +73,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardResponseDto> findWorkspaceAndBoards(Long userId,Long workspaceId) {
 
-//        User findUser = userService.findMemberByIdOrElseThrow(userId);
-//
-//        if(findUser.getId().equals())
+
         return boardRepository.findAllByWorkspaceId(workspaceId).stream().map(BoardResponseDto::toDto).toList();
 
     }
@@ -118,7 +101,7 @@ public class BoardServiceImpl implements BoardService {
 
         checkRole(userId, workspaceId);
 
-        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));;
+        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(NOT_FOUND_BOARD));;
 
         AttachFile fileName = findBoard.getBackground();
         if(!background.isEmpty()){
@@ -131,7 +114,7 @@ public class BoardServiceImpl implements BoardService {
         findBoard.updateBoard(title,fileName);
 
         if(title==null){
-            throw new NotFoundException(NOT_FOUND_USER);
+            throw new NotFoundException(NO_TITLE);
         }
         Board savedBoard = boardRepository.save(findBoard);
 
@@ -139,7 +122,7 @@ public class BoardServiceImpl implements BoardService {
         return Board.toDto(savedBoard);
 
     }
-
+    @Transactional
     @Override
     public void delete(Long userId, Long boardId) {
 
