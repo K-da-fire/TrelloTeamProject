@@ -43,7 +43,7 @@ public class LoginController {
 //    }
 
     //회원 탈퇴
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public String deleteAccount(@RequestHeader("Authorization") String authorizationHeader,
                                 @RequestParam String password) {
         // Authorization 헤더에서 JWT 토큰 추출
