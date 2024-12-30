@@ -63,8 +63,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public List<ListsResponseDto> findAllLists() {
-        return listsRepository.findAll().stream().map(ListsResponseDto::toDto).toList();
-
+        return listsRepository.findAllByOrderByOrdersAsc().stream().map(ListsResponseDto::toDto).toList();
     }
     @Override
     public List<ListsResponseDto> findBoardAndLists(Long boardId) {

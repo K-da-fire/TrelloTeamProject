@@ -15,10 +15,11 @@ public class UserResponseDto {
     private String token;
 
     public static UserResponseDto toDto(User user, String token) {
+        String str = "Bearer " + token;
         return new UserResponseDto(
                 user.getEmail(),
                 user.getName(),
-                token
+                str
         );
     }
 }

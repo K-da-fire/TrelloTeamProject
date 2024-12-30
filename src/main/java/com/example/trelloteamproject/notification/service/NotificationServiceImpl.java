@@ -27,6 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
         MethodsClient methods = Slack.getInstance().methods(slackBotToken);
 
         ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+                .token(slackBotToken)
                 .channel(defaultChannel) // 기본 채널로 메시지 전송
                 .text(message)
                 .build();
