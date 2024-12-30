@@ -5,6 +5,7 @@ import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.service.CardService;
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.login.entity.SessionDto;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 public class CardController {
 
     private final CardService cardService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping(value = "/lists/{listId}/cards", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> create(
@@ -32,8 +34,9 @@ public class CardController {
             @Valid @RequestPart CardRequestDto cardRequestDto
     ) {
         String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
         return ResponseEntity.ok().body(cardService.create(
-                token,
+                email,
                 listId,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
@@ -56,8 +59,9 @@ public class CardController {
             @Valid @RequestPart CardRequestDto cardRequestDto
     ){
         String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
         return ResponseEntity.ok().body(cardService.update(
-                token,
+                email,
                 id,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
@@ -72,7 +76,8 @@ public class CardController {
             @PathVariable Long id
     ) {
         String token = authorizationHeader.replace("Bearer ", "").trim();
-        String title = cardService.delete(token, id);
+        String email = jwtTokenProvider.getUsername(token);
+        String title = cardService.delete(email, id);
         return ResponseEntity.ok().body(title + "카드가 삭제 되었습니다.");
     }
 
@@ -94,5 +99,4 @@ public class CardController {
     ){
         return ResponseEntity.ok().body(cardService.searchCardsByTitle(title, pageable));
     }
-
 }
