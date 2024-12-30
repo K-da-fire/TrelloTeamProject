@@ -21,7 +21,7 @@ public class CommentController {
     }
 
     // 댓글 수정
-    @PatchMapping("{cardId}/comments/{commentId}")
+    @PatchMapping("cards/{cardId}/comments/{commentId}")
     public CommentResponseDto updateComment(@PathVariable Long commentId, @PathVariable Long cardId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal Long userId) {
 
         // 댓글 수정
@@ -29,7 +29,7 @@ public class CommentController {
     }
 
     // 댓글 삭제
-    @DeleteMapping("{cardId}/comments/{commentId}")
+    @DeleteMapping("cards/{cardId}/comments/{commentId}")
     public void deleteComment(@PathVariable Long commentId, @PathVariable Long cardId, @AuthenticationPrincipal Long userId) {
         // 댓글 삭제
         commentService.deleteComment(userId, commentId);
