@@ -29,7 +29,7 @@ public class LoginServiceImpl implements LoginService {
             throw new DuplicatedException(EMAIL_EXIST);
         }
 
-        String encodePassword = passwordEncoder.encoder(password);
+        //String encodePassword = passwordEncoder.encoder(password);
 
         User user = userRepository.save(new User(
                 email,
