@@ -9,8 +9,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// TODO : List와 Board가 추가되었을 때 boardName 혹은 boardId로 전체 보드 조회 수정
-// boardId로 수정한다면 findByName 등의 함수로 boardId를 찾은 후 검색 쿼리 개선
 @RequiredArgsConstructor
 public class CardQueryDslImpl implements CardQueryDsl {
 

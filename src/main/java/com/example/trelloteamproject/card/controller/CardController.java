@@ -82,7 +82,7 @@ public class CardController {
         return ResponseEntity.ok().body(title + "카드가 삭제 되었습니다.");
     }
 
-    @GetMapping
+    @GetMapping("/cards")
     public ResponseEntity<List<CardResponseDto>> searchCards(
             @RequestParam(required = false) Long boardId,
             @RequestParam(required = false) String title,

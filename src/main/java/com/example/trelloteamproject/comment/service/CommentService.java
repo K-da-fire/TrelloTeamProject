@@ -10,13 +10,13 @@ public interface CommentService {
 
     // 댓글 생성
     @Transactional
-    CommentResponseDto createComment(Long userId, Long cardId, CommentRequestDto requestDto);
+    CommentResponseDto createComment(String email, Long cardId, CommentRequestDto requestDto);
 
     // 댓글 수정
     @Transactional
-    CommentResponseDto updateComment(Long userId, Long commentId, CommentRequestDto requestDto);
+    CommentResponseDto updateComment(String email, Long commentId, CommentRequestDto requestDto);
 
     // 댓글 삭제
     @Transactional
-    void deleteComment(Long userId, Long commentId);
+    void deleteComment(String email, Long commentId);
 }
