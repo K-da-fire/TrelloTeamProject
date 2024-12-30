@@ -23,8 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
-import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
+import static com.example.trelloteamproject.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -94,7 +93,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Workspace findWorkspaceByIdOrElseThrow(Long id) {
-        return workSpaceRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
+        return workSpaceRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_WORKSPACE));
 
     }
 

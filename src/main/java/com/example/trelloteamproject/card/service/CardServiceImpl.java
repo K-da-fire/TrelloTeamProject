@@ -6,7 +6,6 @@ import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
 import com.example.trelloteamproject.exception.ErrorCode;
-import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.service.ListsService;
@@ -14,12 +13,15 @@ import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
@@ -29,6 +31,7 @@ public class CardServiceImpl implements CardService {
     private final ListsService listsService;
     private final AttachFileService attachFileService;
 
+    @Transactional
     @Override
     public CardResponseDto create(Long userId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
         User user = userService.findUserByIdOrElseThrow(userId);
@@ -70,6 +73,7 @@ public class CardServiceImpl implements CardService {
         return card.getTitle();
     }
 
+    @Transactional
     @Override
     public CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
         Card card = checkManager(userId, cardId);
@@ -94,6 +98,12 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<CardResponseDto> findByListId(Long listId) {
         List<Card> cards = cardRepository.findByListId(listId);
+        return cards.stream().map(Card::toDto).toList();
+    }
+
+    @Override
+    public List<CardResponseDto> searchCardsByTitle(String title, Pageable pageable) {
+        List<Card> cards = cardRepository.findByTitleContains(title, pageable);
         return cards.stream().map(Card::toDto).toList();
     }
 

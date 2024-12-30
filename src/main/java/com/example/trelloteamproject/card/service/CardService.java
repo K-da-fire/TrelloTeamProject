@@ -2,6 +2,7 @@ package com.example.trelloteamproject.card.service;
 
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,4 +24,6 @@ public interface CardService {
     CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile image, LocalDateTime deadline);
 
     List<CardResponseDto> findByListId(Long listId);
+
+    List<CardResponseDto> searchCardsByTitle(String title, Pageable pageable);
 }

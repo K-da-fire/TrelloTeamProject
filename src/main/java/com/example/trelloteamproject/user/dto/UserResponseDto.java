@@ -12,10 +12,13 @@ public class UserResponseDto {
 
     private String name;
 
-    public static UserResponseDto toDto(User user) {
+    private String token;
+
+    public static UserResponseDto toDto(User user, String token) {
         return new UserResponseDto(
                 user.getEmail(),
-                user.getName()
+                user.getName(),
+                token
         );
     }
 }
