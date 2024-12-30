@@ -3,6 +3,7 @@ package com.example.trelloteamproject.workspace.controller;
 
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.login.entity.SessionDto;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceRequestDto;
 import com.example.trelloteamproject.workspace.dto.CreateWorkspaceResponseDto;
 import com.example.trelloteamproject.workspace.dto.WorkspaceRequestDto;
@@ -25,40 +26,37 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
-    SessionDto session = new SessionDto(1L, Auth.ADMIN);
+    private final JwtTokenProvider jwtTokenProvider;
     @PostMapping()
     public ResponseEntity<CreateWorkspaceResponseDto> save(
             @Valid
             @RequestBody CreateWorkspaceRequestDto requestDto,
-            HttpServletRequest httpServlet){
-//        HttpSession session = httpServlet.getSession(false);
+            @RequestHeader("Authorization") String authorizationHeader){
+        String token = authorizationHeader.replace("Bearer ", "").trim();
 
-        Long userId = (Long) session.getId();
+
+        String email = jwtTokenProvider.getUsername(token);
 
 //        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto.getTitle(),requestDto.getContent());
+        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(email,requestDto.getTitle(),requestDto.getContent());
 
         return new ResponseEntity<>(savedWorkspace, HttpStatus.CREATED);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<WorkspaceResponseDto>> findAll(
-            @Valid
-            HttpServletRequest httpServletRequest){
-
-        Long userId = (Long) session.getId();
-
+    public ResponseEntity<List<WorkspaceResponseDto>> findAll(){
         List<WorkspaceResponseDto> allWorkspaces = workspaceService.findAllWorkspaces();
         return new ResponseEntity<>(allWorkspaces,HttpStatus.OK);
     }
     @GetMapping("/users2")
     public ResponseEntity<List<WorkspaceResponseDto>> findWorkspace(
             @Valid
-            HttpServletRequest httpServletRequest){
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = (Long) session.getId();
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
 
-        List<WorkspaceResponseDto> findWorkspace = workspaceService.findUserAndWorkspaces(userId);
+        List<WorkspaceResponseDto> findWorkspace = workspaceService.findUserAndWorkspaces(email);
         return new ResponseEntity<>(findWorkspace,HttpStatus.OK);
     }
     @PatchMapping("/{workspaceId}")
@@ -66,10 +64,11 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @Valid
             @RequestBody WorkspaceRequestDto requestDto,
-            HttpServletRequest request){
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = (Long) session.getId();
-        WorkspaceResponseDto updateWorkspace = workspaceService.updateWorkspace(userId,workspaceId, requestDto.getTitle(), requestDto.getContent());
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
+        WorkspaceResponseDto updateWorkspace = workspaceService.updateWorkspace(email,workspaceId, requestDto.getTitle(), requestDto.getContent());
 
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
     }
@@ -77,10 +76,12 @@ public class WorkspaceController {
     public ResponseEntity<Void> delete(
             @PathVariable Long workspaceId,
             @Valid
-            HttpServletRequest request){
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = (Long) session.getId();
-        workspaceService.delete(userId,workspaceId);
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
+
+        workspaceService.delete(email,workspaceId);
 
         return new ResponseEntity<>(HttpStatus.OK);
 

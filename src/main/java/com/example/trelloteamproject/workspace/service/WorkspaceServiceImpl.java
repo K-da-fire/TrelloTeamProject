@@ -35,9 +35,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Transactional
     @Override
-    public CreateWorkspaceResponseDto save(Long userId, String title, String content) {
+    public CreateWorkspaceResponseDto save(String email, String title, String content) {
 
-        User finduser = userService.findUserByIdOrElseThrow(userId);
+        User finduser = userService.findUserByEmailOrElseThrow(email);
 
         if(!finduser.getAuth().equals(Auth.ADMIN)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);
@@ -57,8 +57,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<WorkspaceResponseDto> findUserAndWorkspaces(Long userId) {
-        List<Invitation> findInvitation = invitationService.findByUserIdOrElseThrow(userId);
+    public List<WorkspaceResponseDto> findUserAndWorkspaces(String email) {
+        User findUser = userService.findUserByEmailOrElseThrow(email);
+        List<Invitation> findInvitation = invitationService.findByUserIdOrElseThrow(email);
 
 
 
@@ -78,8 +79,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public WorkspaceResponseDto updateWorkspace(Long userId,Long workspaceId, String title, String content) {
-        checkRole(userId, workspaceId);
+    public WorkspaceResponseDto updateWorkspace(String email,Long workspaceId, String title, String content) {
+        checkRole(email, workspaceId);
         Workspace findWorkspace = findWorkspaceByIdOrElseThrow(workspaceId);
 
         findWorkspace.updateWorkspace(title,content);
@@ -98,15 +99,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void delete(Long userId,Long workspaceId) {
-        checkRole(userId, workspaceId);
+    public void delete(String email,Long workspaceId) {
+        checkRole(email, workspaceId);
         Workspace findWorkspace = findWorkspaceByIdOrElseThrow(workspaceId);
         workSpaceRepository.delete(findWorkspace);
     }
 
 
-    private void checkRole(Long userId, Long workspaceId){
-        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(userId, workspaceId);
+    private void checkRole(String email, Long workspaceId){
+        Invitation findInvitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(email, workspaceId);
 
         if(!findInvitation.getRole().equals(Role.WORKSPACE)){
             throw new NoAuthorizedException(NO_AUTHOR_CHANGE);

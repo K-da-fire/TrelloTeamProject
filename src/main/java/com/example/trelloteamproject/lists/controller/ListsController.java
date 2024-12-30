@@ -10,12 +10,14 @@ import com.example.trelloteamproject.lists.dto.ListsRequestDto;
 import com.example.trelloteamproject.lists.dto.ListsResponseDto;
 import com.example.trelloteamproject.lists.service.ListsService;
 import com.example.trelloteamproject.login.entity.SessionDto;
+import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.show.dto.ShowResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,79 +27,71 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ListsController {
     private final ListsService listsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    SessionDto session = new SessionDto(1L, Auth.ADMIN);
-
-    @PostMapping("/{boardId}/lists")
+    @PostMapping("/workspace/{workspaceId}/{boardId}/lists")
     public ResponseEntity<ListsResponseDto> save(
+            @PathVariable Long workspaceId,
             @PathVariable Long boardId,
             @Valid
             @RequestBody ListsRequestDto requestDto,
-            HttpServletRequest httpServlet){
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        Long userId = (Long) session.getId();
-//        HttpSession session = httpServlet.getSession(false);
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
 
-//        Long userId = (Long) session.getAttribute("userId");
-
-//        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
-        ListsResponseDto savedLists = listsService.save(userId,boardId,requestDto.getContent(),requestDto.getOrders());
+        ListsResponseDto savedLists = listsService.save(email,workspaceId,boardId,requestDto.getContent(),requestDto.getOrders());
 
         return new ResponseEntity<>(savedLists, HttpStatus.CREATED);
     }
 
     @GetMapping("/lists")
-    public ResponseEntity<List<ListsResponseDto>> findList(
-            @Valid
-            HttpServletRequest httpServletRequest){
+    public ResponseEntity<List<ListsResponseDto>> findList(){
         List<ListsResponseDto> allLists = listsService.findAllLists();
         return new ResponseEntity<>(allLists,HttpStatus.OK);
 
     }
 
-    @GetMapping("/{boardId}/lists")
-    public ResponseEntity<List<ListsResponseDto>> findListB(
-            @PathVariable Long boardId,
-            @Valid
-            HttpServletRequest httpServletRequest){
-        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(boardId);
+    @GetMapping("/workspace/{workspaceId}/{boardId}/lists")
+    public ResponseEntity<List<ListsResponseDto>> findListPath(
+            @PathVariable Long workspaceId,
+            @PathVariable Long boardId){
+        List<ListsResponseDto> boardAndLists = listsService.findBoardAndLists(workspaceId,boardId);
         return new ResponseEntity<>(boardAndLists,HttpStatus.OK);
 
     }
-//    @GetMapping("/workspaces/{workspaceId}/boards/{boardId}")
-//    public ResponseEntity<List<ShowResponseDto>> oneBoard(
-//            @PathVariable Long workspaceId,
-//            @PathVariable Long boardId,
-//
-//            @Valid
-//            HttpServletRequest httpServletRequest){
-//        Long userId = (Long) session.getId();
-//
-////        List<ShowResponseDto> allBoards = boardService.findOne(workspaceId,boardId,userId);
-////        return new ResponseEntity<>(allBoards,HttpStatus.OK);
-//
-//    }
 
-    @PatchMapping("/lists/{listsId}")
+
+    @PatchMapping("/workspace/{workspaceId}/{boardId}/lists/{listsId}")
     public ResponseEntity<ListsResponseDto> update(
+            @PathVariable Long workspaceId,
+            @PathVariable Long boardId,
             @PathVariable Long listsId,
             @Valid
             @RequestBody ListsRequestDto requestDto,
-            HttpServletRequest request){
-        Long userId = (Long) session.getId();
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        ListsResponseDto updateWorkspace = listsService.updateLists(userId,listsId, requestDto.getContent(), requestDto.getOrders());
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
+
+
+        ListsResponseDto updateWorkspace = listsService.updateLists(email,workspaceId,boardId,listsId, requestDto.getContent(), requestDto.getOrders());
 
         return new ResponseEntity<>(updateWorkspace, HttpStatus.OK);
     }
 
-    @DeleteMapping("/lists/{listsId}")
+    @DeleteMapping("/workspace/{workspaceId}/{boardId}/lists/{listsId}")
     public ResponseEntity<Void> delete(
+            @PathVariable Long workspaceId,
+            @PathVariable Long boardId,
             @PathVariable Long listsId,
             @Valid
-            HttpServletRequest request){
-        Long userId = (Long) session.getId();
-        listsService.delete(userId,listsId);
+            @RequestHeader("Authorization") String authorizationHeader){
+
+
+        String token = authorizationHeader.replace("Bearer ", "").trim();
+        String email = jwtTokenProvider.getUsername(token);
+        listsService.delete(email,workspaceId,boardId,listsId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

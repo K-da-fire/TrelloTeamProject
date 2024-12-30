@@ -18,16 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class InvitationController {
     private final InvitationService invitationService;
 
+
     @PostMapping()
     public ResponseEntity<InvitationResponseDto> save(
             @Valid
-            @RequestBody InvitationRequestDto requestDto,
-            HttpServletRequest httpServlet) {
-//        HttpSession session = httpServlet.getSession(false);
-
-//        Long userId = (Long) session.getAttribute("userId");
-
-//        CreateWorkspaceResponseDto savedWorkspace = workspaceService.save(userId,requestDto);
+            @RequestBody InvitationRequestDto requestDto) {
 
         InvitationResponseDto savedInvitation = invitationService.save(requestDto.getEmail(), requestDto.getWorkspaceId(), Role.valueOf(requestDto.getRole()));
 

@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface WorkspaceService {
-    CreateWorkspaceResponseDto save(Long userId, String title,String content);
+    CreateWorkspaceResponseDto save(String email, String title,String content);
 
     List<WorkspaceResponseDto> findAllWorkspaces();
-    List<WorkspaceResponseDto> findUserAndWorkspaces(Long userId);
-    WorkspaceResponseDto updateWorkspace(Long userId,Long workspace_id,String title,String content);
+    List<WorkspaceResponseDto> findUserAndWorkspaces(String email);
+    WorkspaceResponseDto updateWorkspace(String email,Long workspace_id,String title,String content);
 
     Workspace findWorkspaceByIdOrElseThrow(Long id);
 
 
-    void delete(Long userId,Long workspaceId);
+    void delete(String email,Long workspaceId);
 
 }
