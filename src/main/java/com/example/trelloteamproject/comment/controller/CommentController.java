@@ -14,7 +14,7 @@ public class CommentController {
     private final CommentServiceImpl commentService;
 
     @PostMapping("cards/{cardId}/comments")
-    public CommentResponseDto createComment( @PathVariable Long cardId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal Long userId) {
+    public CommentResponseDto createComment(@PathVariable Long cardId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal Long userId) {
 
         return commentService.createComment(userId, cardId, requestDto);
     }
@@ -33,3 +33,4 @@ public class CommentController {
         // 댓글 삭제
         commentService.deleteComment(userId, commentId);
     }
+}
