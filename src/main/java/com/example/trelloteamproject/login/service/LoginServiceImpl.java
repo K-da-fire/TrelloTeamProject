@@ -23,25 +23,6 @@ public class LoginServiceImpl implements LoginService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public UserResponseDto signUp(String email, String password, String name, Auth auth) {
-        if(userRepository.existsByEmail(email)){
-            throw new DuplicatedException(EMAIL_EXIST);
-        }
-
-        //String encodePassword = passwordEncoder.encoder(password);
-
-        User user = userRepository.save(new User(
-                email,
-                password,
-                name,
-                auth
-        ));
-
-
-        return UserResponseDto.toDto(user, null);
-    }
-
-    @Override
     public UserResponseDto login(String email, String password) throws NotFoundException {
         // 이메일로 사용자 검색
 //        System.out.println("Logging in user: " + email);  // 로그 찍기
