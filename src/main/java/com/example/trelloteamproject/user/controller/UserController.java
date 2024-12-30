@@ -24,13 +24,4 @@ public class UserController {
     ) {
         return ResponseEntity.ok().body(userService.signUp(userSignInRequestDto.getEmail(), userSignInRequestDto.getPassword(), userSignInRequestDto.getName(), userSignInRequestDto.getAuth()));
     }
-
-    @DeleteMapping
-    public ResponseEntity<String> deleteUser(
-            @SessionAttribute(name = LoginStatus.LOGIN_USER) SessionDto session,
-            @Valid @RequestBody UserDeleteRequestDto userDeleteRequestDto
-            ) {
-        userService.deleteUser(session.getId(), userDeleteRequestDto.getPassword());
-        return ResponseEntity.ok("User deleted.");
-    }
 }

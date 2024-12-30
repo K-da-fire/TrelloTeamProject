@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 public interface CardService {
-    CardResponseDto create(Long userId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline);
+    CardResponseDto create(String userId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline);
 
     List<CardResponseDto> searchCards(Long boardId, String title, String explanation, String userName, LocalDateTime deadline);
 
@@ -19,9 +19,9 @@ public interface CardService {
 
     Card findByIdOrElseThrow(Long id);
 
-    String delete(Long userId, Long cardId);
+    String delete(String userId, Long cardId);
 
-    CardResponseDto update(Long userId, Long cardId, String title, String explanation, MultipartFile image, LocalDateTime deadline);
+    CardResponseDto update(String userId, Long cardId, String title, String explanation, MultipartFile image, LocalDateTime deadline);
 
     List<CardResponseDto> findByListId(Long listId);
 

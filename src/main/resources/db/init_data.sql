@@ -1,5 +1,5 @@
-INSERT INTO users (email, password, name, auth, deleted_at)
-VALUES ('test@test.com', 'password1', 'name', 'ADMIN', null);
+INSERT INTO users (email, password, name, auth, deleted_at, is_deleted)
+VALUES ('test@test.com', 'password1', 'name', 'ADMIN', null, false);
 
 INSERT INTO workspace (title, content)
 VALUES ('title', 'content');
@@ -14,7 +14,7 @@ DROP PROCEDURE IF EXISTS cardInsert;
 CREATE PROCEDURE cardInsert()
 BEGIN
     DECLARE i INT DEFAULT 1;
-    WHILE i <= 1000
+    WHILE i <= 100000
         DO
             INSERT INTO cards (user_id, lists_id, title, explanation, attach_file_id, deadline)
             VALUES (1, 1, CONCAT('title ', i), 'explanation', null, '2024-12-31T00:00:01');
@@ -22,3 +22,5 @@ BEGIN
         end while;
 end;
 CALL cardInsert();
+
+
