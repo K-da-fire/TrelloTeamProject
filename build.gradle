@@ -50,6 +50,9 @@ dependencies {
 
     // h2 database
     runtimeOnly 'com.h2database:h2'
+
+    //slack 연결
+    implementation 'com.slack.api:slack-api-client:1.28.0'
 }
 
 tasks.named('test') {
