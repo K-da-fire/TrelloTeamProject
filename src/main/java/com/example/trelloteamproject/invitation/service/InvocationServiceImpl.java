@@ -1,6 +1,5 @@
 package com.example.trelloteamproject.invitation.service;
 import com.example.trelloteamproject.common.Role;
-import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.invitation.dto.InvitationResponseDto;
 import com.example.trelloteamproject.invitation.entity.Invitation;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
-import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
 
 @Service
 @RequiredArgsConstructor
