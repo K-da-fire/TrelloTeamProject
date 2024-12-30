@@ -98,7 +98,7 @@ public class BoardServiceImpl implements BoardService {
     public ShowResponseDto findOne(Long workspaceId, Long boardId) {
 
 
-        return new ShowResponseDto(boardRepository.findBoardByListsAndCard(boardId));
+        return new ShowResponseDto(boardRepository.findBoardByListsAndCard2(boardId));
 
 
     }
