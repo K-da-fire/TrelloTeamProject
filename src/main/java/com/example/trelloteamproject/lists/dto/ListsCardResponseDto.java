@@ -19,7 +19,7 @@ public class ListsCardResponseDto {
         this.id=id;
         List<CardResponseDto> cardResponseDtos = new ArrayList<>();
         for (Card card : cards) {
-            cardResponseDtos.add(new CardResponseDto(card.getTitle(), card.getExplanation(),card.getUser().getEmail(),"card.getAttachFile().getFilePath()",card.getDeadline(),card.getCreatedAt(),card.getUpdatedAt()));
+            cardResponseDtos.add(new CardResponseDto(card.getTitle(), card.getExplanation(),card.getUser().getEmail(),card.getAttachFile() != null ? card.getAttachFile().getFilePath() : "",card.getDeadline(),card.getCreatedAt(),card.getUpdatedAt()));
         }
         this.cards=cardResponseDtos;
 
