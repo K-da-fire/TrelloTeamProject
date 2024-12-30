@@ -19,7 +19,9 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cards")
+@Table(name = "cards", indexes = {
+        @Index(name = "title_index", columnList = "title")
+})
 public class Card  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +42,7 @@ public class Card  extends BaseEntity {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attach_file_id")
-    private AttachFile attachFile;
+    private AttachFile attachFile = new AttachFile("", "");
 
     private LocalDateTime deadline;
 

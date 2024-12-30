@@ -29,7 +29,6 @@ import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_FILE;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 public class AttachFileServiceImpl implements AttachFileService {
     @Value("${cloud.aws.s3.bucket}")
@@ -38,6 +37,7 @@ public class AttachFileServiceImpl implements AttachFileService {
     private final AttachFileRepository attachFileRepository;
     private final AmazonS3 amazonS3;
 
+    @Transactional
     @Override
     public AttachFile uploadFile(MultipartFile multipartFile){
         if (multipartFile == null || multipartFile.isEmpty()) {
@@ -62,17 +62,12 @@ public class AttachFileServiceImpl implements AttachFileService {
     }
 
     @Override
-    public AttachFile findByIdOrElseThrow(Long id) {
-        AttachFile attachFile = attachFileRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_FILE));
-        return attachFile;
-    }
-
-    @Override
     public AttachFile findByFileNameOrElseThrow(String fileName) {
         AttachFile attachFile = attachFileRepository.findByFileName(fileName).orElseThrow(() -> new NotFoundException(NOT_FOUND_FILE));
         return attachFile;
     }
 
+    @Transactional
     @Override
     public void deleteFile(String fileName){
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));

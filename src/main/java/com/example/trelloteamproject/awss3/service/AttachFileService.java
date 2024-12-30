@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface AttachFileService {
     AttachFile uploadFile(MultipartFile multipartFile);
 
-    AttachFile findByIdOrElseThrow(Long id);
     AttachFile findByFileNameOrElseThrow(String fileName);
 
     void deleteFile(String fileName);
