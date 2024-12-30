@@ -10,9 +10,7 @@ public interface UserService {
 
     UserResponseDto signUp(String email, String password, String name, Auth auth);
 
-
-    void deleteUser(Long userId, String password);
-
-
     User findUserByIdOrElseThrow(Long id);
+
+    User findUserByEmailOrElseThrow(String email);
 }
