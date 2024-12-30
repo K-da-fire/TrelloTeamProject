@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 public interface ListsService {
-    ListsResponseDto save(Long userId,Long boardId,String content, Long orders);
+    ListsResponseDto save(String email,Long workspaceId,Long boardId,String content, Long orders);
 
     Lists findListsByIdOrElseThrow(Long id);
 
@@ -23,13 +23,13 @@ public interface ListsService {
 //    List<BoardResponseDto> findAllBoards();
 
 
-    List<ListsResponseDto> findBoardAndLists(Long boardId);
+    List<ListsResponseDto> findBoardAndLists(Long workspaceId,Long boardId);
 
     List<ListsResponseDto> findOne(Long workspaceId, Long boardId, Long userId);
 
     List<ListsResponseDto>findAllLists();
 
-    ListsResponseDto updateLists(Long userId,Long listsId,String content,Long orders);
+    ListsResponseDto updateLists(String email,Long workspaceId,Long boardId,Long listsId,String content,Long orders);
 
-    void delete(Long userId,Long listsId);
+    void delete(String email,Long workspaceId,Long boardId,Long listsId);
 }
