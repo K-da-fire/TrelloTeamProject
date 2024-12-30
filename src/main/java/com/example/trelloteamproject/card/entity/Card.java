@@ -1,14 +1,17 @@
 package com.example.trelloteamproject.card.entity;
 
-import com.example.trelloteamproject.card.dto.CardRequestDto;
+import com.example.trelloteamproject.awss3.entity.AttachFile;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.common.BaseEntity;
-import com.example.trelloteamproject.list.entity.List;
+import com.example.trelloteamproject.exception.ErrorCode;
+import com.example.trelloteamproject.exception.NoAuthorizedException;
+import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -26,33 +29,52 @@ public class Card  extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "list_id")
-    private List list;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lists_id")
+    private Lists list;
 
     private String title;
 
     private String explanation;
 
-    private String route;
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attach_file_id")
+    private AttachFile attachFile;
 
     private LocalDateTime deadline;
+
+    public Card(User user, Lists list, String title, String explanation, AttachFile attachFile, LocalDateTime deadline) {
+        this.user = user;
+        this.list = list;
+        this.title = title;
+        this.explanation = explanation;
+        this.attachFile = attachFile;
+        this.deadline = deadline;
+    }
 
     public CardResponseDto toDto(){
         return new CardResponseDto(
                 title,
                 explanation,
-                user.getName(),
+                this.user.getName(),
+                (attachFile != null)? attachFile.getFilePath() : "",
                 deadline,
                 getCreatedAt(),
                 getUpdatedAt()
         );
     }
 
-    public void updateCard(String titel, String explanation, String route, LocalDateTime deadline) {
-        this.title = titel;
+    public void updateCard(String title, String explanation, AttachFile attachFile, LocalDateTime deadline) {
+        this.title = title;
         this.explanation = explanation;
-        this.route = route;
+        this.attachFile = attachFile;
         this.deadline = deadline;
+    }
+
+    public void checkAuth(Long userId){
+        if(!this.user.getId().equals(userId)){
+            throw new NoAuthorizedException(ErrorCode.NO_AUTHOR_CHANGE);
+        }
     }
 }

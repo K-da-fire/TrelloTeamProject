@@ -17,8 +17,7 @@ public class MemberResponseDto {
     public static MemberResponseDto toDto(User user, String token) {
         return new MemberResponseDto(
                 user.getEmail(),
-                user.getName(),
-                token
+                user.getName()
         );
     }
 }

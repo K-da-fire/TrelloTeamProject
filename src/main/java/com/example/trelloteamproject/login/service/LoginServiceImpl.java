@@ -1,6 +1,5 @@
 package com.example.trelloteamproject.login.service;
 
-
 import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.exception.DuplicatedException;
 import com.example.trelloteamproject.exception.InvalidInputException;
@@ -13,7 +12,7 @@ import com.example.trelloteamproject.util.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.example.trelloteamproject.exception.ErrorCode.*;
+import static com.example.trelloteamproject.exception.ErrorCode.EMAIL_EXIST;
 
 @Service
 @RequiredArgsConstructor
