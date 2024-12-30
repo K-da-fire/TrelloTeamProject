@@ -74,7 +74,7 @@ public class Card  extends BaseEntity {
         this.deadline = deadline;
     }
 
-    public void checkAuth(String email){
+    public void checkManager(String email){
         if(!this.user.getEmail().equals(email)){
             throw new NoAuthorizedException(ErrorCode.NO_AUTHOR_CHANGE);
         }

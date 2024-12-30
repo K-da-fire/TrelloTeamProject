@@ -38,6 +38,7 @@ public enum ErrorCode {
     ALREADY_LOGIN("이미 로그인이 되어있습니다.", HttpStatus.UNAUTHORIZED),
     //권한이 없는 사용자가 수정, 삭제를 하려고 할 때
     NO_AUTHOR_CHANGE("수정, 삭제는 작성자만 할 수 있습니다.", HttpStatus.UNAUTHORIZED),
+    NO_AUTHOR_READ_ONLY("읽기 전용 권한은 수정, 삭제를 할 수 없습니다.", HttpStatus.UNAUTHORIZED),
 
     NO_TITLE("제목이 공백일수 없습니다." ,HttpStatus.BAD_REQUEST),
     NOT_FOUND_BOARD("보드를 찾을수 없습니다." ,HttpStatus.BAD_REQUEST),

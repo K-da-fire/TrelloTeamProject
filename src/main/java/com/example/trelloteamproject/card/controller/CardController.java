@@ -3,8 +3,6 @@ package com.example.trelloteamproject.card.controller;
 import com.example.trelloteamproject.card.dto.CardRequestDto;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.service.CardService;
-import com.example.trelloteamproject.common.Auth;
-import com.example.trelloteamproject.login.entity.SessionDto;
 import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +24,10 @@ public class CardController {
     private final CardService cardService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping(value = "/lists/{listId}/cards", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/workspaces/{workspaceId}/lists/{listId}/cards", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> create(
             @RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long workspaceId,
             @PathVariable Long listId,
             @RequestPart(required = false) MultipartFile file,
             @Valid @RequestPart CardRequestDto cardRequestDto
@@ -37,10 +36,10 @@ public class CardController {
         String email = jwtTokenProvider.getUsername(token);
         return ResponseEntity.ok().body(cardService.create(
                 email,
+                workspaceId,
                 listId,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
-//                cardRequestDto.getImage(),
                 file,
                 cardRequestDto.getDeadline()
         ));
@@ -51,9 +50,10 @@ public class CardController {
         return ResponseEntity.ok().body(cardService.findById(id));
     }
 
-    @PatchMapping(value = "/cards/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/workspaces/{workspaceId}/cards/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CardResponseDto> update(
             @RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long workspaceId,
             @PathVariable Long id,
             @RequestPart(required = false) MultipartFile file,
             @Valid @RequestPart CardRequestDto cardRequestDto
@@ -61,23 +61,24 @@ public class CardController {
         String token = authorizationHeader.replace("Bearer ", "").trim();
         String email = jwtTokenProvider.getUsername(token);
         return ResponseEntity.ok().body(cardService.update(
+                workspaceId,
                 email,
                 id,
                 cardRequestDto.getTitle(),
                 cardRequestDto.getExplanation(),
                 file,
-                cardRequestDto.getDeadline()
-        ));
+                cardRequestDto.getDeadline()));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/workspaces/{workspaceId}/cards/{id}")
     public ResponseEntity<String> delete(
             @RequestHeader("Authorization") String authorizationHeader,
+            @PathVariable Long workspaceId,
             @PathVariable Long id
     ) {
         String token = authorizationHeader.replace("Bearer ", "").trim();
         String email = jwtTokenProvider.getUsername(token);
-        String title = cardService.delete(email, id);
+        String title = cardService.delete(workspaceId, email, id);
         return ResponseEntity.ok().body(title + "카드가 삭제 되었습니다.");
     }
 

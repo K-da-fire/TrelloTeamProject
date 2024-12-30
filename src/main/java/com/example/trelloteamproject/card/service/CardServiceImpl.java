@@ -5,26 +5,29 @@ import com.example.trelloteamproject.awss3.service.AttachFileService;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
+import com.example.trelloteamproject.common.Role;
 import com.example.trelloteamproject.exception.ErrorCode;
+import com.example.trelloteamproject.exception.NoAuthorizedException;
 import com.example.trelloteamproject.exception.NotFoundException;
+import com.example.trelloteamproject.invitation.entity.Invitation;
+import com.example.trelloteamproject.invitation.service.InvitationService;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.service.ListsService;
-import com.example.trelloteamproject.login.jwt.JwtTokenProvider;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.message.TokenParser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.ion.Timestamp;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_READ_ONLY;
 
 @Slf4j
 @Service
@@ -35,11 +38,13 @@ public class CardServiceImpl implements CardService {
     private final UserService userService;
     private final ListsService listsService;
     private final AttachFileService attachFileService;
+    private final InvitationService invitationService;
 
     @Transactional
     @Override
-    public CardResponseDto create(String email, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
+    public CardResponseDto create(String email, Long workspaceId, Long listId, String title, String explanation, MultipartFile image, LocalDateTime deadline) {
         User user = userService.findUserByEmailOrElseThrow(email);
+        checkAuth(user, workspaceId);
         Lists list = listsService.findListsByIdOrElseThrow(listId);
         AttachFile attachFile = null;
         if(image != null) {
@@ -67,7 +72,9 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public String delete(String email, Long cardId) {
+    public String delete(Long workspaceId, String email, Long cardId) {
+        User user = userService.findUserByEmailOrElseThrow(email);
+        checkAuth(user, workspaceId);
         Card card = checkManager(email, cardId);
         card.setAttachFile(null);
         cardRepository.save(card);
@@ -80,7 +87,9 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public CardResponseDto update(String email, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
+    public CardResponseDto update(Long workspaceId, String email, Long cardId, String title, String explanation, MultipartFile file, LocalDateTime deadline) {
+        User user = userService.findUserByEmailOrElseThrow(email);
+        checkAuth(user, workspaceId);
         Card card = checkManager(email, cardId);
         AttachFile fileName = card.getAttachFile();
         if(file != null){
@@ -119,7 +128,14 @@ public class CardServiceImpl implements CardService {
 
     private Card checkManager(String email, Long cardId){
         Card card = findByIdOrElseThrow(cardId);
-        card.checkAuth(email);
+        card.checkManager(email);
         return card;
+    }
+
+    private void checkAuth(User user, Long workspaceId){
+        Invitation invitation = invitationService.findInvocationByUserAndWorkspaceIdOrElseThrow(user.getId(), workspaceId);
+        if(invitation.getRole().equals(Role.READ_ONLY)){
+            throw new NoAuthorizedException(NO_AUTHOR_READ_ONLY);
+        }
     }
 }

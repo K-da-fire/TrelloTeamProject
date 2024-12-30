@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
@@ -41,11 +42,13 @@ public class Config {
                 .httpBasic((auth) -> auth.disable());
 
         // JWT 인증 필터 추가
-        http.addFilterAt(jwtAuthenticationFilter(jwtTokenProvider), BasicAuthenticationFilter.class);
+//        http.addFilterAt(jwtAuthenticationFilter(jwtTokenProvider), BasicAuthenticationFilter.class);
+        http.addFilterAt(jwtAuthenticationFilter(jwtTokenProvider), ExceptionTranslationFilter.class);
 
         //인가 설정
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("users","users/login","users/delete").permitAll() //인증 없이 허용
+                        .requestMatchers("users","users/login","users/delete", "swagger-ui/**", "/swagger-resources/*",
+                                "/v3/api-docs/**").permitAll() //인증 없이 허용
                         .requestMatchers("/admin").hasRole("ADMIN")             // ADMIN 권한 필요
                         .anyRequest().authenticated());                          // 나머지 인증 필요
 

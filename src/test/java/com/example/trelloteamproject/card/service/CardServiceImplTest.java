@@ -3,16 +3,12 @@ package com.example.trelloteamproject.card.service;
 import com.example.trelloteamproject.card.dto.CardResponseDto;
 import com.example.trelloteamproject.card.entity.Card;
 import com.example.trelloteamproject.card.repository.CardRepository;
-import com.example.trelloteamproject.exception.InvalidInputException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.lists.entity.Lists;
 import com.example.trelloteamproject.lists.repository.ListsRepository;
-import com.example.trelloteamproject.lists.service.ListsService;
 import com.example.trelloteamproject.user.entity.User;
 import com.example.trelloteamproject.user.repository.UserRepository;
-import com.example.trelloteamproject.user.service.UserService;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +49,7 @@ class CardServiceImplTest {
         MultipartFile image = null;
         LocalDateTime deadline = LocalDateTime.now();
         // When
-        CardResponseDto card = cardService.create(user.getEmail(), lists.getId(), title, explanation, image, deadline);
+        CardResponseDto card = cardService.create(user.getEmail(), , lists.getId(), title, explanation, image, deadline);
         // Then
         assertNotNull(card);
     }
@@ -68,7 +64,7 @@ class CardServiceImplTest {
         User user = userRepository.findById(1L).get();
         Card card = cardRepository.findById(1L).get();
         // When
-        cardService.delete(user.getEmail(), card.getId());
+        cardService.delete(, user.getEmail(), card.getId());
         // Then
         assertThatThrownBy(() ->cardService.findByIdOrElseThrow(card.getId()))
                 .isInstanceOf(NotFoundException.class);
@@ -85,7 +81,7 @@ class CardServiceImplTest {
         MultipartFile image = null;
         LocalDateTime deadline = LocalDateTime.now();
         // When
-        CardResponseDto cardResponseDto = cardService.update(user.getEmail(), card.getId(), title, explanation, image, deadline);
+        CardResponseDto cardResponseDto = cardService.update(, user.getEmail(), card.getId(), title, explanation, image, deadline);
         // Then
         assertNotNull(cardResponseDto);
     }
