@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.trelloteamproject.exception.ErrorCode.NOT_FOUND_USER;
 import static com.example.trelloteamproject.exception.ErrorCode.NO_AUTHOR_CHANGE;
@@ -32,12 +33,12 @@ public class InvocationServiceImpl implements InvitationService {
 
     @Override
     public InvitationResponseDto save(String email, Long workspaceId, Role role) {
-        User finduser = userRepository.findByEmail(email);
+        Optional<User> finduser = userRepository.findByEmail(email);
 
         Workspace findWorkspaceId = workspaceRepository.findById(workspaceId).orElseThrow(() -> new NotFoundException(NOT_FOUND_USER));
 
 
-        Invitation invitation = new Invitation(finduser,findWorkspaceId,role);
+        Invitation invitation = new Invitation(finduser.get(),findWorkspaceId,role);
 
         Invitation savedInvitation = invitationRepository.save(invitation);
 

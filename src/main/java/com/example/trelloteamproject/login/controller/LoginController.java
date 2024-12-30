@@ -1,9 +1,9 @@
 package com.example.trelloteamproject.login.controller;
 
-import com.example.trelloteamproject.login.dto.LoginRequestDto;
-import com.example.trelloteamproject.login.dto.MemberRequestDto;
-import com.example.trelloteamproject.login.dto.MemberResponseDto;
+
 import com.example.trelloteamproject.login.service.LoginService;
+import com.example.trelloteamproject.user.dto.LoginRequestDto;
+import com.example.trelloteamproject.user.dto.UserResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,31 +16,18 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    @PostMapping
-    public ResponseEntity<MemberResponseDto> signUp(
-            @Valid @RequestBody MemberRequestDto userRequestDto
-    ) {
-        return ResponseEntity.ok().body(loginService.signUp(userRequestDto.getEmail(), userRequestDto.getPassword(), userRequestDto.getName(), userRequestDto.getAuth()));
-    }
-
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<MemberResponseDto> login(
-            @Valid @RequestBody LoginRequestDto userRequestDto
+    public ResponseEntity<UserResponseDto> login(
+            @Valid @RequestBody LoginRequestDto loginRequestDto
     ) {
-        MemberResponseDto responseDto = loginService.login(
-                userRequestDto.getEmail(),
-                userRequestDto.getPassword()
+        UserResponseDto responseDto = loginService.login(
+                loginRequestDto.getEmail(),
+                loginRequestDto.getPassword()
         );
         return ResponseEntity.ok(responseDto);
     }
 
-//    //로그아웃
-//    @PostMapping("/logout")
-//    public String logout(@RequestHeader("Authorization") String token) {
-//        // 클라이언트 측에서 토큰을 삭제하도록
-//        return "로그아웃 되었습니다";
-//    }
 
     //회원 탈퇴
     @DeleteMapping("/delete")
