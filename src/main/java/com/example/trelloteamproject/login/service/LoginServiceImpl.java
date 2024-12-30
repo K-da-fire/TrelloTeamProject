@@ -1,7 +1,5 @@
 package com.example.trelloteamproject.login.service;
 
-import com.example.trelloteamproject.common.Auth;
-import com.example.trelloteamproject.exception.DuplicatedException;
 import com.example.trelloteamproject.exception.InvalidInputException;
 import com.example.trelloteamproject.exception.NotFoundException;
 import com.example.trelloteamproject.login.jwt.JwtTokenProvider;

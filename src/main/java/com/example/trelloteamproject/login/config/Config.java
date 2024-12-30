@@ -47,9 +47,10 @@ public class Config {
 
         //인가 설정
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("users","users/login","users/delete", "swagger-ui/**", "/swagger-resources/*",
-                                "/v3/api-docs/**").permitAll() //인증 없이 허용
+                .requestMatchers("/users","/users/login","/users/delete","/workspaces/boards","boards/**", "swagger-ui/**", "/swagger-resources/*",
+                        "/v3/api-docs/**").permitAll() //인증 없이 허용
                         .requestMatchers("/admin").hasRole("ADMIN")             // ADMIN 권한 필요
+                        .requestMatchers("/admin/**").hasRole("ADMIN")             // ADMIN 권한 필요
                         .anyRequest().authenticated());                          // 나머지 인증 필요
 
         //세션 설정
