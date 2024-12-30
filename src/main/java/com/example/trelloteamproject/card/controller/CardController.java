@@ -7,6 +7,8 @@ import com.example.trelloteamproject.common.Auth;
 import com.example.trelloteamproject.login.entity.SessionDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +74,6 @@ public class CardController {
         return ResponseEntity.ok().body(title + "카드가 삭제 되었습니다.");
     }
 
-    // TODO : List와 Board가 추가되었을 때 boardName 혹은 boardId로 전체 보드 조회 수정
     @GetMapping
     public ResponseEntity<List<CardResponseDto>> searchCards(
             @RequestParam(required = false) Long boardId,
@@ -83,4 +84,13 @@ public class CardController {
     ){
         return ResponseEntity.ok().body(cardService.searchCards(boardId, title, explanation, userName, deadline));
     }
+
+    @GetMapping("/cards/title")
+    public ResponseEntity<List<CardResponseDto>> searchCardsByTitle(
+            @RequestParam String title,
+            @PageableDefault Pageable pageable
+    ){
+        return ResponseEntity.ok().body(cardService.searchCardsByTitle(title, pageable));
+    }
+
 }
